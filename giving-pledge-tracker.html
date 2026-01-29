@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Giving Pledge Tracker | Accountability for Billionaire Philanthropy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d1b4e 50%, #1a1a1a 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2d1b4e 0%, #1a1a1a 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 4px solid #9d4edd;
+            box-shadow: 0 6px 20px rgba(157, 78, 221, 0.4);
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #c77dff;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(199, 125, 255, 0.5);
+        }
+
+        .header .subtitle {
+            font-size: 1.3rem;
+            color: #ffd60a;
+            font-style: italic;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .pledge-info {
+            background: rgba(157, 78, 221, 0.1);
+            border: 2px solid #9d4edd;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 1000px;
+        }
+
+        .pledge-info h2 {
+            color: #c77dff;
+            margin-bottom: 1rem;
+        }
+
+        .pledge-info p {
+            font-size: 1.1rem;
+            margin: 0.5rem 0;
+        }
+
+        .stats-banner {
+            background: linear-gradient(135deg, rgba(255, 214, 10, 0.2) 0%, rgba(157, 78, 221, 0.2) 100%);
+            padding: 2rem;
+            text-align: center;
+            border-top: 2px solid #9d4edd;
+            border-bottom: 2px solid #9d4edd;
+        }
+
+        .stats-banner h3 {
+            color: #ffd60a;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            color: #c77dff;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #e0e0e0;
+            margin-top: 0.5rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .awards-section {
+            margin: 3rem 0;
+            background: rgba(255, 214, 10, 0.05);
+            border: 3px solid #ffd60a;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+        }
+
+        .awards-section h2 {
+            color: #ffd60a;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .awards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .award-card {
+            background: linear-gradient(135deg, rgba(157, 78, 221, 0.2) 0%, rgba(255, 214, 10, 0.1) 100%);
+            border: 2px solid #9d4edd;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .award-card::before {
+            content: '🏆';
+            font-size: 8rem;
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            opacity: 0.1;
+            transform: rotate(15deg);
+        }
+
+        .award-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(157, 78, 221, 0.4);
+            border-color: #ffd60a;
+        }
+
+        .award-emoji {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .award-title {
+            font-size: 1.5rem;
+            color: #ffd60a;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .award-winner {
+            font-size: 1.3rem;
+            color: #c77dff;
+            margin-bottom: 1rem;
+        }
+
+        .award-reason {
+            color: #e0e0e0;
+            font-size: 1rem;
+            font-style: italic;
+        }
+
+        .pledger-grid {
+            display: grid;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .pledger-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(157, 78, 221, 0.3);
+            border-radius: 15px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .pledger-card:hover {
+            border-color: #9d4edd;
+            box-shadow: 0 10px 30px rgba(157, 78, 221, 0.3);
+        }
+
+        .pledger-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .pledger-info h3 {
+            font-size: 2rem;
+            color: #c77dff;
+            margin-bottom: 0.5rem;
+        }
+
+        .pledge-year {
+            color: #888;
+            font-size: 1rem;
+        }
+
+        .wealth-display {
+            text-align: right;
+        }
+
+        .current-wealth {
+            font-size: 2rem;
+            color: #ffd60a;
+            font-weight: bold;
+        }
+
+        .wealth-change {
+            font-size: 1.1rem;
+            margin-top: 0.3rem;
+        }
+
+        .wealth-increase {
+            color: #4ade80;
+        }
+
+        .wealth-decrease {
+            color: #f87171;
+        }
+
+        .progress-section {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(157, 78, 221, 0.1);
+            border-radius: 10px;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .progress-label .label-text {
+            color: #c77dff;
+        }
+
+        .progress-label .label-percentage {
+            color: #ffd60a;
+            font-weight: bold;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(157, 78, 221, 0.3);
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #9d4edd 0%, #c77dff 100%);
+            border-radius: 20px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .progress-bar-pathetic {
+            background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
+        }
+
+        .progress-marker {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(157, 78, 221, 0.9);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: 2px solid #ffd60a;
+            z-index: 10;
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .detail-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #9d4edd;
+        }
+
+        .detail-box h4 {
+            color: #ffd60a;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .detail-box .value {
+            font-size: 1.8rem;
+            color: #c77dff;
+            font-weight: bold;
+        }
+
+        .detail-box .description {
+            color: #888;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .notable-donations {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(255, 214, 10, 0.05);
+            border: 1px solid rgba(255, 214, 10, 0.3);
+            border-radius: 10px;
+        }
+
+        .notable-donations h4 {
+            color: #ffd60a;
+            margin-bottom: 1rem;
+        }
+
+        .donation-item {
+            padding: 1rem;
+            margin: 0.5rem 0;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
+            border-left: 3px solid #9d4edd;
+        }
+
+        .donation-amount {
+            color: #c77dff;
+            font-weight: bold;
+        }
+
+        .caveat-box {
+            background: rgba(220, 38, 38, 0.1);
+            border: 2px solid rgba(220, 38, 38, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .caveat-box .caveat-title {
+            color: #fca5a5;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #ffd60a;
+            text-align: center;
+            margin: 4rem 0 2rem 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .methodology {
+            background: rgba(157, 78, 221, 0.1);
+            border: 2px solid #9d4edd;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .methodology h3 {
+            color: #c77dff;
+            margin-bottom: 1rem;
+        }
+
+        .methodology ul {
+            margin-left: 2rem;
+            margin-top: 1rem;
+        }
+
+        .methodology li {
+            margin: 0.5rem 0;
+            color: #e0e0e0;
+        }
+
+        .footer {
+            background: #000000;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 5rem;
+            border-top: 4px solid #9d4edd;
+        }
+
+        .footer h3 {
+            color: #ffd60a;
+            margin-bottom: 1rem;
+        }
+
+        .footer p {
+            color: #e0e0e0;
+            margin: 1rem 0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .pledger-header {
+                flex-direction: column;
+            }
+
+            .wealth-display {
+                text-align: left;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📜 The Giving Pledge Tracker 📜</h1>
+        <p class="subtitle">"Monitoring the commitment to give away most of their wealth... eventually... maybe... we'll see"</p>
+    </div>
+
+    <div class="stats-banner">
+        <h3>The Giving Pledge: By The Numbers</h3>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-number">241</div>
+                <div class="stat-label">Billionaires Signed</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">$600B+</div>
+                <div class="stat-label">Collective Wealth Increase Since Signing</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">~15 years</div>
+                <div class="stat-label">Average Time Since Pledge</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">???</div>
+                <div class="stat-label">Actual Verification System</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="pledge-info">
+            <h2>What is The Giving Pledge?</h2>
+            <p>
+                Launched in 2010 by Warren Buffett and Bill Gates, The Giving Pledge is a commitment by the world's wealthiest 
+                individuals to give away the majority of their wealth to philanthropy or charitable causes, either during their 
+                lifetime or in their will.
+            </p>
+            <p style="margin-top: 1rem;">
+                <strong>The Fine Print:</strong> It's not legally binding. There's no timeline. "Majority" isn't defined. 
+                Donations to personal foundations count. And there's no independent verification.
+            </p>
+        </div>
+
+        <!-- Awards Section -->
+        <div class="awards-section">
+            <h2>🏆 Annual Giving Pledge Awards 🏆</h2>
+            <p style="text-align: center; color: #e0e0e0; margin-bottom: 2rem; font-size: 1.1rem;">
+                Celebrating achievement in creative wealth retention
+            </p>
+
+            <div class="awards-grid">
+                <div class="award-card">
+                    <div class="award-emoji">🐌</div>
+                    <div class="award-title">Slowest Progress Award</div>
+                    <div class="award-winner">Warren Buffett</div>
+                    <div class="award-reason">
+                        Pledged in 2010, wealth increased from $47B to $133B. 
+                        "I'm getting to it... eventually!"
+                    </div>
+                </div>
+
+                <div class="award-card">
+                    <div class="award-emoji">🎭</div>
+                    <div class="award-title">Most Creative Accounting</div>
+                    <div class="award-winner">Mark Zuckerberg</div>
+                    <div class="award-reason">
+                        "Donating" $45B in stock to own foundation (Chan Zuckerberg Initiative LLC) 
+                        structured as a company, not a charity. Still controls it all!
+                    </div>
+                </div>
+
+                <div class="award-card">
+                    <div class="award-emoji">📈</div>
+                    <div class="award-title">Best Wealth Growth While "Giving"</div>
+                    <div class="award-winner">Jeff Bezos</div>
+                    <div class="award-reason">
+                        Signed in 2024. Took 14 years to pledge. Meanwhile wealth grew from 
+                        $18B to $194B. That's 978% growth!
+                    </div>
+                </div>
+
+                <div class="award-card">
+                    <div class="award-emoji">🏛️</div>
+                    <div class="award-title">Foundation Fortress Award</div>
+                    <div class="award-winner">Bill Gates</div>
+                    <div class="award-reason">
+                        $67B donated to foundation. Foundation invests it back in stocks. 
+                        Foundation's endowment grows. It's wealth inception!
+                    </div>
+                </div>
+
+                <div class="award-card">
+                    <div class="award-emoji">🎨</div>
+                    <div class="award-title">Tax Deduction Virtuoso</div>
+                    <div class="award-winner">MacKenzie Scott</div>
+                    <div class="award-reason">
+                        Actually giving away billions rapidly! Wait, that's not satirical. 
+                        She's actually doing it. This award goes to everyone else.
+                    </div>
+                </div>
+
+                <div class="award-card">
+                    <div class="award-emoji">⏰</div>
+                    <div class="award-title">Lifetime Achievement in Procrastination</div>
+                    <div class="award-winner">The Pledge Itself</div>
+                    <div class="award-reason">
+                        No deadline, no requirements, no enforcement. 
+                        "I pledge to... eventually... do something... maybe in my will."
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Individual Pledger Tracking</h2>
+
+        <div class="pledger-grid" id="pledgers">
+            <!-- Pledger cards will be generated by JavaScript -->
+        </div>
+
+        <div class="methodology">
+            <h3>📊 Methodology & Data Sources</h3>
+            <p>This tracker uses publicly available data from multiple sources:</p>
+            <ul>
+                <li><strong>Forbes Real-Time Billionaire Rankings</strong> - Current net worth estimates</li>
+                <li><strong>GivingPledge.org</strong> - Official pledge letters and signing dates</li>
+                <li><strong>Chronicle of Philanthropy</strong> - Donation tracking and verification</li>
+                <li><strong>ProPublica</strong> - Foundation tax filings (IRS Form 990-PF)</li>
+                <li><strong>Foundation financial reports</strong> - Where available</li>
+            </ul>
+            <p style="margin-top: 1rem; color: #ffd60a;">
+                <strong>Important Note:</strong> Private foundations can satisfy pledge commitments while maintaining control 
+                of assets. Donations to one's own foundation count as "giving" for tax purposes, even though the donor often 
+                maintains investment control and can pay family members salaries from foundation funds.
+            </p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h3>The Reality Check</h3>
+        <p>
+            The Giving Pledge is a well-intentioned idea, but it highlights a fundamental issue: 
+            we're relying on the voluntary generosity of individuals who've accumulated unprecedented wealth, 
+            rather than having robust public systems funded through fair taxation.
+        </p>
+        <p style="margin-top: 1.5rem;">
+            When billionaires donate to their own foundations, they get tax deductions, maintain control of the assets, 
+            can invest those assets to grow their foundation's endowment, and can pay themselves or family members 
+            foundation salaries. It's philanthropic... but it's also a wealth preservation strategy.
+        </p>
+        <p style="margin-top: 1.5rem; color: #c77dff; font-weight: bold;">
+            This is satire with a serious point: We need to demand accountability and transparency in philanthropy, 
+            and question whether charitable giving by billionaires is an adequate substitute for fair taxation 
+            and strong public services.
+        </p>
+    </div>
+
+    <script>
+        const pledgers = [
+            {
+                name: "Warren Buffett",
+                pledgeYear: 2010,
+                wealthAtPledge: 47,
+                currentWealth: 133,
+                estimatedGiven: 50.7,
+                percentGiven: 38.1,
+                notableDonations: [
+                    { amount: "$50.7B", description: "Berkshire Hathaway stock to Gates Foundation and family foundations (cumulative)" },
+                    { amount: "Ongoing", description: "Annual donations of Berkshire stock" }
+                ],
+                caveats: [
+                    "Donations are in Berkshire stock, not cash - maintains his control of the company",
+                    "Much of donations go to Bill & Melinda Gates Foundation, which he helps govern",
+                    "Wealth has grown faster than donations - net worth increased 183% since pledge",
+                    "Plans to give it away 'eventually' - but wealth keeps growing"
+                ],
+                analysis: "The OG pledger who inspired the whole thing. His wealth has nearly tripled since pledging to give it away."
+            },
+            {
+                name: "Bill & Melinda Gates",
+                pledgeYear: 2010,
+                wealthAtPledge: 53,
+                currentWealth: 106,
+                estimatedGiven: 59,
+                percentGiven: 55.7,
+                notableDonations: [
+                    { amount: "$59B", description: "To Gates Foundation (cumulative)" },
+                    { amount: "$20B", description: "2022 donation to foundation (largest single donation ever)" }
+                ],
+                caveats: [
+                    "Gates Foundation is the largest private foundation in the world with $75B endowment",
+                    "Foundation invests donations - endowment grew from $35B to $75B since 2010",
+                    "Family can maintain governance and strategic control",
+                    "Foundation grants ~$6B/year while endowment grows by more",
+                    "Despite 'giving away' $59B, net worth doubled from $53B to $106B"
+                ],
+                analysis: "Created the pledge. Foundation endowment keeps growing even as they 'give away' billions. Net worth still doubled."
+            },
+            {
+                name: "Mark Zuckerberg",
+                pledgeYear: 2010,
+                wealthAtPledge: 13.5,
+                currentWealth: 177,
+                estimatedGiven: 3.2,
+                percentGiven: 1.8,
+                notableDonations: [
+                    { amount: "$45B pledge", description: "99% of Facebook shares to Chan Zuckerberg Initiative (2015 announcement)" },
+                    { amount: "$3.2B", description: "Estimated actual charitable giving through CZI (not stock transfers)" }
+                ],
+                caveats: [
+                    "CZI is a LIMITED LIABILITY COMPANY (LLC), not a charity - no disclosure requirements",
+                    "He retains voting control of 'donated' Facebook shares through CZI",
+                    "Can invest CZI funds in for-profit companies",
+                    "No mandatory distribution requirements like real charities have",
+                    "Wealth increased 1,211% from $13.5B to $177B since pledge",
+                    "The $45B 'donation' was a pledge of future transfers, not immediate giving"
+                ],
+                analysis: "Master class in looking generous while maintaining complete control. Wealth up 13x since pledging."
+            },
+            {
+                name: "Jeff Bezos",
+                pledgeYear: 2024,
+                wealthAtPledge: 194,
+                currentWealth: 194,
+                estimatedGiven: 13,
+                percentGiven: 6.7,
+                notableDonations: [
+                    { amount: "$10B", description: "Bezos Earth Fund pledge (climate change)" },
+                    { amount: "$2B", description: "Bezos Day One Fund (homelessness and education)" },
+                    { amount: "$1B+", description: "Various other causes" }
+                ],
+                caveats: [
+                    "Didn't sign pledge until 2024 - 14 years after it was created",
+                    "Wealth grew from ~$18B (2010) to $194B before signing",
+                    "That's 978% growth over the period he could have been pledging",
+                    "Earth Fund commitments are pledges over multiple years, not immediate donations",
+                    "Much of giving is to own foundations/initiatives he controls",
+                    "Has given far less as % of wealth than other mega-billionaires"
+                ],
+                analysis: "Waited until his wealth grew 10x before pledging. Better late than never?"
+            },
+            {
+                name: "MacKenzie Scott",
+                pledgeYear: 2019,
+                wealthAtPledge: 36,
+                currentWealth: 35,
+                estimatedGiven: 17,
+                percentGiven: 48.6,
+                notableDonations: [
+                    { amount: "$17B+", description: "Direct donations to 1,600+ nonprofits (2019-2024)" },
+                    { amount: "No-strings-attached", description: "Gives unrestricted funds - organizations can use as needed" },
+                    { amount: "Rapid distribution", description: "Giving away ~$3-4B per year consistently" }
+                ],
+                caveats: [
+                    "Actually doing what the pledge intended - giving it away quickly and directly",
+                    "Not using a foundation - donating directly to operating charities",
+                    "Unrestricted gifts (rare and valuable for nonprofits)",
+                    "Despite giving away $17B, wealth remains at $35B due to Amazon stock growth",
+                    "Even aggressive giving can't keep up with investment returns"
+                ],
+                analysis: "The exception that proves the rule. Actually gives money away with no strings. Wealth still barely budged."
+            },
+            {
+                name: "Elon Musk",
+                pledgeYear: 2012,
+                wealthAtPledge: 2,
+                currentWealth: 251,
+                estimatedGiven: 0.3,
+                percentGiven: 0.1,
+                notableDonations: [
+                    { amount: "$100M", description: "Carbon capture prize competition" },
+                    { amount: "$150M+", description: "Various donations (estimated)" },
+                    { amount: "$5.7B", description: "Tesla stock to charity (2021) - recipient undisclosed, possibly his own foundation" }
+                ],
+                caveats: [
+                    "Wealth increased 12,450% from $2B to $251B since pledge",
+                    "The $5.7B donation destination is undisclosed - could be his own foundation",
+                    "If it was his foundation, he'd maintain control and get tax deduction",
+                    "Known donations are tiny fraction of wealth growth",
+                    "Has been vocal about disagreeing with how others give",
+                    "Estimated total giving is less than 0.2% of current net worth"
+                ],
+                analysis: "Pledged when worth $2B, now worth $251B. Giving hasn't kept pace with wealth explosion."
+            },
+            {
+                name: "Michael Bloomberg",
+                pledgeYear: 2010,
+                wealthAtPledge: 18,
+                currentWealth: 106,
+                estimatedGiven: 17,
+                percentGiven: 16,
+                notableDonations: [
+                    { amount: "$17B+", description: "Bloomberg Philanthropies (cumulative)" },
+                    { amount: "$1B+/year", description: "Annual giving in recent years" },
+                    { amount: "$3B", description: "Johns Hopkins University" }
+                ],
+                caveats: [
+                    "Wealth increased 489% from $18B to $106B since pledge",
+                    "Despite giving $17B, net worth is 6x higher than when he pledged",
+                    "Bloomberg Philanthropies is his foundation - maintains influence over use",
+                    "Spent $1B on failed presidential campaign (could have been given to charity)",
+                    "Giving rate hasn't kept up with wealth accumulation"
+                ],
+                analysis: "Genuinely gives billions, but wealth grows faster. Net worth 6x higher despite $17B in giving."
+            }
+        ];
+
+        function renderPledgers() {
+            const container = document.getElementById('pledgers');
+            
+            container.innerHTML = pledgers.map(p => {
+                const wealthChange = p.currentWealth - p.wealthAtPledge;
+                const wealthChangePercent = ((wealthChange / p.wealthAtPledge) * 100).toFixed(1);
+                const yearsSince = 2025 - p.pledgeYear;
+                const progressWidth = Math.min(p.percentGiven, 100);
+                
+                return `
+                    <div class="pledger-card">
+                        <div class="pledger-header">
+                            <div class="pledger-info">
+                                <h3>${p.name}</h3>
+                                <div class="pledge-year">Pledged: ${p.pledgeYear} (${yearsSince} years ago)</div>
+                            </div>
+                            <div class="wealth-display">
+                                <div class="current-wealth">$${p.currentWealth}B</div>
+                                <div class="wealth-change ${wealthChange >= 0 ? 'wealth-increase' : 'wealth-decrease'}">
+                                    ${wealthChange >= 0 ? '▲' : '▼'} $${Math.abs(wealthChange)}B (${wealthChangePercent >= 0 ? '+' : ''}${wealthChangePercent}%)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="progress-section">
+                            <div class="progress-label">
+                                <span class="label-text">Progress Toward Giving Away "Majority" of Wealth</span>
+                                <span class="label-percentage">${p.percentGiven.toFixed(1)}%</span>
+                            </div>
+                            <div class="progress-bar-container">
+                                ${progressWidth < 5 ? `<div class="progress-marker">← You are here</div>` : ''}
+                                <div class="progress-bar ${progressWidth < 20 ? 'progress-bar-pathetic' : ''}" style="width: ${progressWidth}%"></div>
+                            </div>
+                            <p style="color: #888; margin-top: 0.5rem; font-size: 0.9rem;">
+                                ${progressWidth < 50 ? 'Note: "Majority" typically means more than 50%' : 'Past the halfway mark!'}
+                            </p>
+                        </div>
+
+                        <div class="details-grid">
+                            <div class="detail-box">
+                                <h4>Wealth at Pledge</h4>
+                                <div class="value">$${p.wealthAtPledge}B</div>
+                                <div class="description">${p.pledgeYear}</div>
+                            </div>
+                            <div class="detail-box">
+                                <h4>Estimated Given</h4>
+                                <div class="value">$${p.estimatedGiven}B</div>
+                                <div class="description">${yearsSince} years</div>
+                            </div>
+                            <div class="detail-box">
+                                <h4>Annual Rate</h4>
+                                <div class="value">$${(p.estimatedGiven / yearsSince).toFixed(1)}B</div>
+                                <div class="description">Per year average</div>
+                            </div>
+                            <div class="detail-box">
+                                <h4>Wealth Growth</h4>
+                                <div class="value" style="color: ${wealthChange >= 0 ? '#4ade80' : '#f87171'}">
+                                    ${wealthChangePercent >= 0 ? '+' : ''}${wealthChangePercent}%
+                                </div>
+                                <div class="description">Since pledge</div>
+                            </div>
+                        </div>
+
+                        <div class="notable-donations">
+                            <h4>📋 Notable Donations & Commitments</h4>
+                            ${p.notableDonations.map(d => `
+                                <div class="donation-item">
+                                    <span class="donation-amount">${d.amount}</span> - ${d.description}
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        ${p.caveats.length > 0 ? `
+                            <div class="caveat-box">
+                                <div class="caveat-title">⚠️ Important Context</div>
+                                <ul style="margin-left: 1.5rem; margin-top: 0.5rem;">
+                                    ${p.caveats.map(c => `<li style="margin: 0.5rem 0; color: #e0e0e0;">${c}</li>`).join('')}
+                                </ul>
+                            </div>
+                        ` : ''}
+
+                        <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(157, 78, 221, 0.1); border-radius: 8px; border-left: 4px solid #9d4edd;">
+                            <strong style="color: #c77dff;">Analysis:</strong> 
+                            <span style="color: #e0e0e0;">${p.analysis}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Render pledgers on page load
+        renderPledgers();
+    </script>
+</body>
+</html>
