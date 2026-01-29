@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Presidential Profit Tracker | Trump's White House Payday</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #115e59 0%, #1e293b 50%, #115e59 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #d97706 0%, #1e293b 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 5px solid #fbbf24;
+            box-shadow: 0 8px 30px rgba(217, 119, 6, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '💰';
+            font-size: 15rem;
+            position: absolute;
+            right: -50px;
+            top: -50px;
+            opacity: 0.1;
+            transform: rotate(-15deg);
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            color: #fbbf24;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+            position: relative;
+            z-index: 1;
+        }
+
+        .header .subtitle {
+            font-size: 1.4rem;
+            color: #fcd34d;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+
+        .profit-banner {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.4) 0%, rgba(251, 191, 36, 0.4) 100%);
+            padding: 2.5rem 2rem;
+            text-align: center;
+            border-top: 3px solid #d97706;
+            border-bottom: 3px solid #d97706;
+        }
+
+        .profit-banner h2 {
+            color: #fbbf24;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .profit-counter {
+            font-size: 5rem;
+            color: #16a34a;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 20px rgba(22, 163, 74, 0.5);
+            margin: 1rem 0;
+        }
+
+        .profit-subtitle {
+            font-size: 1.3rem;
+            color: #e0e0e0;
+            margin-top: 1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .intro-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 3px solid #fbbf24;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .intro-box h3 {
+            color: #fbbf24;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .emoluments-clause {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin: 2rem 0;
+        }
+
+        .emoluments-clause h4 {
+            color: #fca5a5;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #fbbf24;
+            text-align: center;
+            margin: 4rem 0 2rem 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .revenue-streams {
+            display: grid;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .revenue-card {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%);
+            border: 2px solid rgba(251, 191, 36, 0.4);
+            border-radius: 15px;
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .revenue-card:hover {
+            border-color: #fbbf24;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(251, 191, 36, 0.3);
+        }
+
+        .revenue-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .revenue-title {
+            font-size: 2rem;
+            color: #fbbf24;
+        }
+
+        .revenue-amount {
+            font-size: 2.5rem;
+            color: #16a34a;
+            font-weight: bold;
+        }
+
+        .revenue-details {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .detail-item {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #d97706;
+        }
+
+        .detail-item h5 {
+            color: #fcd34d;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .detail-item .amount {
+            color: #16a34a;
+            font-weight: bold;
+            font-size: 1.3rem;
+        }
+
+        .source-tag {
+            display: inline-block;
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid #3b82f6;
+            color: #93c5fd;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .conflict-highlight {
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid #ef4444;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+        }
+
+        .conflict-highlight .title {
+            color: #fca5a5;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(217, 119, 6, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%);
+            border: 2px solid #d97706;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(217, 119, 6, 0.4);
+        }
+
+        .stat-card .emoji {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-card .number {
+            font-size: 3rem;
+            color: #16a34a;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .stat-card .label {
+            color: #e0e0e0;
+            font-size: 1.1rem;
+        }
+
+        .timeline {
+            background: rgba(0, 0, 0, 0.5);
+            border: 3px solid #fbbf24;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 3rem 0;
+        }
+
+        .timeline h3 {
+            color: #fbbf24;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item {
+            background: rgba(217, 119, 6, 0.1);
+            border-left: 4px solid #d97706;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .timeline-item:hover {
+            background: rgba(217, 119, 6, 0.2);
+            transform: translateX(10px);
+        }
+
+        .timeline-date {
+            color: #fcd34d;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-title {
+            color: #fbbf24;
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-amount {
+            color: #16a34a;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+
+        .comparison-section {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(217, 119, 6, 0.2) 100%);
+            border: 3px solid #fbbf24;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 3rem 0;
+        }
+
+        .comparison-section h3 {
+            color: #fbbf24;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .comparison-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .comparison-card h4 {
+            color: #fbbf24;
+            margin-bottom: 1rem;
+        }
+
+        .comparison-number {
+            font-size: 3rem;
+            color: #16a34a;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .vs-badge {
+            display: inline-block;
+            background: rgba(239, 68, 68, 0.3);
+            border: 2px solid #ef4444;
+            color: #fca5a5;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .footer {
+            background: #000000;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 5rem;
+            border-top: 5px solid #fbbf24;
+        }
+
+        .footer h3 {
+            color: #fbbf24;
+            margin-bottom: 1rem;
+        }
+
+        .footer p {
+            color: #e0e0e0;
+            margin: 1rem 0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .methodology-box {
+            background: rgba(59, 130, 246, 0.1);
+            border: 2px solid #3b82f6;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .methodology-box h3 {
+            color: #93c5fd;
+            margin-bottom: 1rem;
+        }
+
+        .methodology-box ul {
+            margin-left: 2rem;
+            color: #e0e0e0;
+        }
+
+        .methodology-box li {
+            margin: 0.5rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .profit-counter {
+                font-size: 3rem;
+            }
+
+            .revenue-header {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💰 The Presidential Profit Tracker 💰</h1>
+        <p class="subtitle">"Draining the Swamp... Straight Into Personal Bank Accounts"</p>
+    </div>
+
+    <div class="profit-banner">
+        <h2>Estimated Revenue During Presidency</h2>
+        <div class="profit-counter">$2.4 Billion+</div>
+        <div class="profit-subtitle">
+            Revenue to Trump Organization businesses during his 4-year presidency (2017-2021)
+        </div>
+        <p style="margin-top: 1rem; color: #888; font-size: 0.9rem;">
+            Based on financial disclosures, investigative reports, and court documents
+        </p>
+    </div>
+
+    <div class="container">
+        <div class="intro-box">
+            <h3>📜 The Emoluments Clause</h3>
+            <p style="margin-bottom: 1rem;">
+                The U.S. Constitution's Foreign Emoluments Clause (Article I, Section 9) prohibits federal 
+                officials from receiving payments from foreign governments without Congressional consent. 
+                The Domestic Emoluments Clause prohibits the President from receiving any emolument from 
+                federal or state governments beyond their salary.
+            </p>
+            <div class="emoluments-clause">
+                <h4>Constitutional Text:</h4>
+                <p style="font-style: italic; margin-top: 0.5rem;">
+                    "...no Person holding any Office of Profit or Trust under them, shall, without the Consent 
+                    of the Congress, accept of any present, Emolument, Office, or Title, of any kind whatever, 
+                    from any King, Prince, or foreign State."
+                </p>
+            </div>
+            <p style="margin-top: 1rem;">
+                <strong>The Issue:</strong> Trump refused to divest from his businesses or place them in a blind trust, 
+                instead transferring day-to-day operations to his sons while maintaining ownership. This meant foreign 
+                and domestic governments could—and did—spend money at his properties while he was president.
+            </p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="emoji">🏨</div>
+                <div class="number">500+</div>
+                <div class="label">Trump Organization Business Entities</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="emoji">🌍</div>
+                <div class="number">$7.8M</div>
+                <div class="label">From Foreign Governments (Proven)</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="emoji">⛳</div>
+                <div class="number">298</div>
+                <div class="label">Days Spent at Trump Properties</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="emoji">💳</div>
+                <div class="number">$0</div>
+                <div class="label">Divested from Businesses</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Revenue Streams While President</h2>
+
+        <div class="revenue-streams">
+            <!-- Foreign Government Payments -->
+            <div class="revenue-card">
+                <div class="revenue-header">
+                    <div class="revenue-title">🌍 Foreign Government Payments</div>
+                    <div class="revenue-amount">$7.8M+</div>
+                </div>
+                <p style="color: #e0e0e0; margin-bottom: 1rem;">
+                    Payments from foreign governments to Trump properties during his presidency, 
+                    documented by House Oversight Committee investigation.
+                </p>
+
+                <div class="revenue-details">
+                    <div class="detail-item">
+                        <h5>China</h5>
+                        <div class="amount">$5.5 million</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            Largest single country source. Included trademark approvals and business deals 
+                            while Trump negotiated trade policy.
+                        </p>
+                        <span class="source-tag">Source: House Oversight Committee</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <h5>Saudi Arabia</h5>
+                        <div class="amount">$615,000+</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            Saudi government paid for rooms, meals, and events at Trump hotels. 
+                            Documented after Khashoggi murder when Trump defended Saudi leadership.
+                        </p>
+                        <span class="source-tag">Source: CREW, WaPo Investigation</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <h5>Qatar, UAE, Kuwait, Afghanistan</h5>
+                        <div class="amount">$1.7M+</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            Combined payments from Middle Eastern governments for hotel stays, 
+                            events, and other services.
+                        </p>
+                        <span class="source-tag">Source: House Oversight Committee</span>
+                    </div>
+                </div>
+
+                <div class="conflict-highlight">
+                    <div class="title">⚠️ Conflict of Interest</div>
+                    <p>Trump made foreign policy decisions affecting these exact countries while 
+                    simultaneously receiving payments from their governments.</p>
+                </div>
+            </div>
+
+            <!-- Mar-a-Lago Membership -->
+            <div class="revenue-card">
+                <div class="revenue-header">
+                    <div class="revenue-title">🏖️ Mar-a-Lago Membership Fees</div>
+                    <div class="revenue-amount">$50M+</div>
+                </div>
+                <p style="color: #e0e0e0; margin-bottom: 1rem;">
+                    Shortly after winning election, Trump doubled Mar-a-Lago initiation fee from 
+                    $100,000 to $200,000. Members gained access to the "Winter White House."
+                </p>
+
+                <div class="revenue-details">
+                    <div class="detail-item">
+                        <h5>New Members (2017-2021)</h5>
+                        <div class="amount">~250 members</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            At $200,000 initiation + $14,000/year dues = $50M+ in initiation fees alone
+                        </p>
+                        <span class="source-tag">Source: NYT, Forbes</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <h5>Foreign Members</h5>
+                        <div class="amount">Undisclosed</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            Trump never disclosed member list. Reporters documented Chinese 
+                            businesswoman with Chinese intelligence connections as member.
+                        </p>
+                        <span class="source-tag">Source: Mother Jones, Miami Herald</span>
+                    </div>
+                </div>
+
+                <div class="conflict-highlight">
+                    <div class="title">⚠️ National Security Risk</div>
+                    <p>Trump conducted sensitive national security business at Mar-a-Lago in view 
+                    of paying club members and guests. Classified documents were later found stored there.</p>
+                </div>
+            </div>
+
+            <!-- Secret Service Payments -->
+            <div class="revenue-card">
+                <div class="revenue-header">
+                    <div class="revenue-title">🛡️ Secret Service & Government Travel</div>
+                    <div class="revenue-amount">$1.4M+</div>
+                </div>
+                <p style="color: #e0e0e0; margin-bottom: 1rem;">
+                    Trump charged Secret Service and government officials to stay at his properties 
+                    while protecting him and conducting official business.
+                </p>
+
+                <div class="revenue-details">
+                    <div class="detail-item">
+                        <h5>Room Charges to Secret Service</h5>
+                        <div class="amount">$1.4 million+</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            Documented Secret Service payments to Trump properties. Actual total likely higher 
+                            as many records sealed or incomplete.
+                        </p>
+                        <span class="source-tag">Source: WaPo, House Committee Investigation</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <h5>Golf Cart Rentals</h5>
+                        <div class="amount">$50,000+</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            Secret Service charged for golf cart rentals at Trump courses. 
+                            Some carts rented at rates of $3,000+ per month.
+                        </p>
+                        <span class="source-tag">Source: CREW via FOIA</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <h5>298 Days at Trump Properties</h5>
+                        <div class="amount">~$150M taxpayer cost</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            Total taxpayer cost for Trump's trips to his own properties. Some portion 
+                            went directly to Trump Organization through room rentals, meals, etc.
+                        </p>
+                        <span class="source-tag">Source: GAO, NBC Analysis</span>
+                    </div>
+                </div>
+
+                <div class="conflict-highlight">
+                    <div class="title">⚠️ Self-Dealing</div>
+                    <p>Trump forced taxpayer-funded federal employees to pay his businesses by choosing 
+                    to conduct official business at his own properties.</p>
+                </div>
+            </div>
+
+            <!-- Foreign Trademark Approvals -->
+            <div class="revenue-card">
+                <div class="revenue-header">
+                    <div class="revenue-title">™️ Foreign Trademark Approvals</div>
+                    <div class="revenue-amount">Value: $100M+</div>
+                </div>
+                <p style="color: #e0e0e0; margin-bottom: 1rem;">
+                    While president, Trump received unprecedented foreign trademark approvals, 
+                    particularly from China, for businesses he owned.
+                </p>
+
+                <div class="revenue-details">
+                    <div class="detail-item">
+                        <h5>China Trademarks</h5>
+                        <div class="amount">38 approvals</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            China approved 38 Trump trademarks between 2017-2019, including during 
+                            trade negotiations. Trademarks covered hotels, golf courses, spas, and more.
+                        </p>
+                        <span class="source-tag">Source: Citizens for Responsibility and Ethics</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <h5>Ivanka Trump China Trademarks</h5>
+                        <div class="amount">16 approvals</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            China approved 16 trademarks for Ivanka (White House advisor) on same day 
+                            she dined with Chinese President Xi Jinping at Mar-a-Lago.
+                        </p>
+                        <span class="source-tag">Source: AP, CREW</span>
+                    </div>
+                </div>
+
+                <div class="conflict-highlight">
+                    <div class="title">⚠️ Quid Pro Quo Concerns</div>
+                    <p>Trademark approvals came during sensitive trade negotiations and policy decisions 
+                    affecting China, raising questions about influence.</p>
+                </div>
+            </div>
+
+            <!-- Political Events & Fundraisers -->
+            <div class="revenue-card">
+                <div class="revenue-header">
+                    <div class="revenue-title">🎪 Political Events at Trump Properties</div>
+                    <div class="revenue-amount">$13M+</div>
+                </div>
+                <p style="color: #e0e0e0; margin-bottom: 1rem;">
+                    Trump's campaign, RNC, and political allies held hundreds of events at Trump properties, 
+                    funneling political donations into his businesses.
+                </p>
+
+                <div class="revenue-details">
+                    <div class="detail-item">
+                        <h5>Campaign & RNC Spending</h5>
+                        <div class="amount">$13 million+</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            Trump's own campaign and RNC spent over $13M at Trump properties during 
+                            his presidency—essentially cycling donor money into his businesses.
+                        </p>
+                        <span class="source-tag">Source: FEC Filings, OpenSecrets</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <h5>Foreign Lobbyists</h5>
+                        <div class="amount">Undisclosed</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            Foreign lobbyists held events at Trump DC hotel, viewing it as way to 
+                            gain favor. Saudi-funded lobbyists spent $270,000+ in one visit.
+                        </p>
+                        <span class="source-tag">Source: WaPo Investigation</span>
+                    </div>
+                </div>
+
+                <div class="conflict-highlight">
+                    <div class="title">⚠️ Pay-to-Play Appearance</div>
+                    <p>Holding political fundraisers at his own properties created perception that 
+                    access to the president could be purchased through patronage of his businesses.</p>
+                </div>
+            </div>
+
+            <!-- Real Estate & Licensing Deals -->
+            <div class="revenue-card">
+                <div class="revenue-header">
+                    <div class="revenue-title">🏢 Real Estate & Licensing Revenue</div>
+                    <div class="revenue-amount">$2.3B+</div>
+                </div>
+                <p style="color: #e0e0e0; margin-bottom: 1rem;">
+                    Trump Organization continued operating and generating revenue from real estate, 
+                    licensing deals, and properties worldwide during his presidency.
+                </p>
+
+                <div class="revenue-details">
+                    <div class="detail-item">
+                        <h5>Total Organization Revenue (2017-2021)</h5>
+                        <div class="amount">~$2.3 billion</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            Financial disclosures show Trump Organization generated approximately $2.3B 
+                            in revenue during his presidency from all sources.
+                        </p>
+                        <span class="source-tag">Source: Financial Disclosure Forms</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <h5>International Licensing Deals</h5>
+                        <div class="amount">$100M+</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            Trump continued to profit from his name being licensed on properties 
+                            in countries including India, Indonesia, Philippines, Turkey, and UAE.
+                        </p>
+                        <span class="source-tag">Source: Forbes, NYT</span>
+                    </div>
+
+                    <div class="detail-item">
+                        <h5>Trump DC Hotel Profits</h5>
+                        <div class="amount">$200M revenue</div>
+                        <p style="color: #e0e0e0; margin-top: 0.5rem;">
+                            Trump DC hotel (in federal building) generated ~$200M in revenue during 
+                            presidency, with heavy foreign government patronage.
+                        </p>
+                        <span class="source-tag">Source: House Oversight Committee</span>
+                    </div>
+                </div>
+
+                <div class="conflict-highlight">
+                    <div class="title">⚠️ Global Conflicts</div>
+                    <p>Trump made foreign policy decisions affecting countries where he had active 
+                    business deals and licensing agreements.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline">
+            <h3>📅 Timeline of Notable Transactions</h3>
+
+            <div class="timeline-item">
+                <div class="timeline-date">January 2017</div>
+                <div class="timeline-title">Inauguration Week Bonanza</div>
+                <div class="timeline-amount">$5M+</div>
+                <p>Foreign governments and lobbyists book Trump DC hotel for inauguration events. 
+                Kuwait switches embassy party from Four Seasons to Trump hotel after election.</p>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">April 2017</div>
+                <div class="timeline-title">China Summit at Mar-a-Lago</div>
+                <div class="timeline-amount">Undisclosed</div>
+                <p>Trump hosts Chinese President Xi at Mar-a-Lago. Same day, China approves 
+                trademark for Ivanka. Trump later reverses position on Chinese company ZTE.</p>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">May 2017</div>
+                <div class="timeline-title">Saudi Arms Deal Celebration</div>
+                <div class="timeline-amount">$110B weapons</div>
+                <p>After announcing $110B Saudi arms deal, Saudi lobbyists spend $270,000 at Trump DC hotel. 
+                Saudi government becomes regular Trump hotel customer.</p>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">2017-2019</div>
+                <div class="timeline-title">T-Mobile Executive Stays</div>
+                <div class="timeline-amount">$195,000</div>
+                <p>T-Mobile executives spend $195,000 at Trump DC hotel while seeking government 
+                approval for Sprint merger. Merger approved.</p>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">October 2019</div>
+                <div class="timeline-title">Doral G7 Proposal</div>
+                <div class="timeline-amount">Millions (potential)</div>
+                <p>Trump announces G7 summit will be held at his Doral resort, promising millions 
+                in revenue. Backs down after public outcry.</p>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">2020</div>
+                <div class="timeline-title">Campaign Cash Recycling</div>
+                <div class="timeline-amount">$7.2M</div>
+                <p>Trump campaign spends $7.2M at Trump properties in 2020 alone—donor money 
+                flowing to Trump's businesses.</p>
+            </div>
+        </div>
+
+        <div class="comparison-section">
+            <h3>📊 How Trump Compares to Other Presidents</h3>
+
+            <div class="comparison-grid">
+                <div class="comparison-card">
+                    <h4>Obama (2009-2017)</h4>
+                    <div class="comparison-number">$0</div>
+                    <div class="vs-badge">vs. $2.4B+</div>
+                    <p style="color: #e0e0e0; margin-top: 1rem;">
+                        Obama had no business interests. His only income was presidential salary 
+                        ($400k/year) plus book royalties (placed in blind trust).
+                    </p>
+                </div>
+
+                <div class="comparison-card">
+                    <h4>Bush Jr. (2001-2009)</h4>
+                    <div class="comparison-number">$0</div>
+                    <div class="vs-badge">vs. $2.4B+</div>
+                    <p style="color: #e0e0e0; margin-top: 1rem;">
+                        Bush put his assets in blind trust. His only income was salary. 
+                        Sold Texas Rangers stake before presidency to avoid conflicts.
+                    </p>
+                </div>
+
+                <div class="comparison-card">
+                    <h4>Clinton (1993-2001)</h4>
+                    <div class="comparison-number">$0</div>
+                    <div class="vs-badge">vs. $2.4B+</div>
+                    <p style="color: #e0e0e0; margin-top: 1rem;">
+                        Clinton had no businesses. Income was salary only. 
+                        Made money from books/speeches AFTER leaving office.
+                    </p>
+                </div>
+
+                <div class="comparison-card">
+                    <h4>Carter (1977-1981)</h4>
+                    <div class="comparison-number">$0</div>
+                    <div class="vs-badge">vs. $2.4B+</div>
+                    <p style="color: #e0e0e0; margin-top: 1rem;">
+                        Carter put his peanut farm in blind trust and recused himself from 
+                        any policies affecting agriculture. Lost money on farm while president.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="methodology-box">
+            <h3>📋 Sources & Methodology</h3>
+            <p style="margin-bottom: 1rem;">
+                All figures compiled from public records, investigative journalism, and official documents:
+            </p>
+            <ul>
+                <li><strong>House Committee on Oversight and Accountability</strong> - Foreign payments investigation (2024)</li>
+                <li><strong>Citizens for Responsibility and Ethics in Washington (CREW)</strong> - Ongoing tracking</li>
+                <li><strong>Financial Disclosure Forms</strong> - Required presidential disclosures (2017-2021)</li>
+                <li><strong>Washington Post</strong> - Investigative reporting on Trump properties</li>
+                <li><strong>New York Times</strong> - Tax returns and business investigations</li>
+                <li><strong>ProPublica</strong> - Conflicts of interest tracking</li>
+                <li><strong>Federal Election Commission</strong> - Campaign spending records</li>
+                <li><strong>Government Accountability Office (GAO)</strong> - Travel costs analysis</li>
+            </ul>
+            <p style="margin-top: 1rem; color: #fbbf24;">
+                <strong>Note:</strong> The $2.4B+ figure is Trump Organization revenue during presidency, 
+                not all profit. Actual profit margins unknown as Trump Organization is private and doesn't 
+                release detailed financials. Foreign government payments of $7.8M+ are documented and proven.
+            </p>
+        </div>
+
+        <div style="background: rgba(239, 68, 68, 0.2); border: 3px solid #ef4444; border-radius: 20px; padding: 3rem 2rem; margin: 3rem 0;">
+            <h3 style="color: #fca5a5; text-align: center; margin-bottom: 2rem;">⚖️ Legal & Ethical Issues</h3>
+            
+            <div style="background: rgba(0, 0, 0, 0.5); padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                <h4 style="color: #fbbf24; margin-bottom: 1rem;">Emoluments Lawsuits</h4>
+                <p>Multiple lawsuits filed alleging Trump violated Foreign and Domestic Emoluments Clauses. 
+                Most dismissed on standing grounds after he left office. Cases documented payments but didn't 
+                reach final legal determination.</p>
+            </div>
+
+            <div style="background: rgba(0, 0, 0, 0.5); padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                <h4 style="color: #fbbf24; margin-bottom: 1rem;">Precedent-Breaking</h4>
+                <p>First president in modern era to refuse divestment or blind trust. Every president since 
+                Carter had either divested, used blind trusts, or had no business interests to avoid even 
+                appearance of conflicts.</p>
+            </div>
+
+            <div style="background: rgba(0, 0, 0, 0.5); padding: 1.5rem; border-radius: 10px; margin: 1rem 0;">
+                <h4 style="color: #fbbf24; margin-bottom: 1rem;">Ongoing Investigations</h4>
+                <p>House Oversight Committee continuing to investigate foreign payments. Committee subpoenaed 
+                documents showing at least $7.8M from foreign governments, with evidence suggesting total could 
+                be significantly higher.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h3>The Bottom Line</h3>
+        <p>
+            Donald Trump is the first president in modern American history to maintain ownership of a 
+            vast business empire while in office, generating billions in revenue—with millions documented 
+            as coming directly from foreign governments and special interests.
+        </p>
+        <p style="margin-top: 1.5rem;">
+            Previous presidents divested, used blind trusts, or had no businesses to avoid conflicts. 
+            Trump's refusal to divest created unprecedented conflicts of interest where foreign governments 
+            and domestic political actors could—and did—patronize his businesses while he held office.
+        </p>
+        <p style="margin-top: 1.5rem; color: #fbbf24; font-weight: bold;">
+            This site presents documented evidence from official sources, investigative journalism, and 
+            public records. All major claims are sourced and verifiable.
+        </p>
+    </div>
+</body>
+</html>
