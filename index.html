@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Billionaire Accountability Map | Where Wealth Hides</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #0f3460 0%, #16213e 100%);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 3px solid #e94560;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: #e94560;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .header .tagline {
+            font-size: 1.2rem;
+            color: #ffd700;
+            font-style: italic;
+        }
+
+        .ticker {
+            background: #e94560;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-weight: bold;
+            overflow: hidden;
+        }
+
+        .ticker-content {
+            animation: scroll 20s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .intro {
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #ffd700;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(233,69,96,0.2) 0%, rgba(15,52,96,0.2) 100%);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(233,69,96,0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(233,69,96,0.3);
+        }
+
+        .stat-card .number {
+            font-size: 2.5rem;
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .label {
+            font-size: 1rem;
+            color: #e0e0e0;
+        }
+
+        .billionaire-grid {
+            display: grid;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .billionaire-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 2rem;
+            border: 1px solid rgba(233,69,96,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .billionaire-card:hover {
+            border-color: #e94560;
+            box-shadow: 0 8px 16px rgba(233,69,96,0.2);
+        }
+
+        .billionaire-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .billionaire-name {
+            font-size: 1.8rem;
+            color: #e94560;
+            margin-bottom: 0.3rem;
+        }
+
+        .net-worth {
+            font-size: 1.3rem;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .properties-section {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .properties-section h4 {
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+
+        .property {
+            background: rgba(233,69,96,0.1);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 0.8rem;
+            border-left: 3px solid #e94560;
+        }
+
+        .property-location {
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .contrast-section {
+            background: rgba(255,215,0,0.1);
+            padding: 1.5rem;
+            border-radius: 5px;
+            margin-top: 1.5rem;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .contrast-section h4 {
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+
+        .contrast-item {
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .contrast-item:last-child {
+            border-bottom: none;
+        }
+
+        .impact-highlight {
+            background: rgba(233,69,96,0.2);
+            padding: 0.3rem 0.6rem;
+            border-radius: 3px;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .filters {
+            background: rgba(255,255,255,0.05);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.7rem 1.5rem;
+            border: 2px solid #e94560;
+            background: rgba(233,69,96,0.2);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #e94560;
+            transform: translateY(-2px);
+        }
+
+        .footer {
+            background: #0f3460;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+            border-top: 3px solid #e94560;
+        }
+
+        .footer p {
+            margin: 0.5rem 0;
+            color: #e0e0e0;
+        }
+
+        .disclaimer {
+            background: rgba(255,215,0,0.1);
+            padding: 1rem;
+            border-radius: 5px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255,215,0,0.3);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #ffd700;
+            margin: 3rem 0 1.5rem 0;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .header .tagline {
+                font-size: 1rem;
+            }
+            
+            .stat-card .number {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💰 The Billionaire Accountability Map 💰</h1>
+        <p class="tagline">"Tracking Wealth Accumulation While Communities Crumble"</p>
+    </div>
+
+    <div class="ticker">
+        <div class="ticker-content">
+            While you read this sentence, the world's billionaires earned approximately $8 million collectively ✦ US billionaire wealth increased 88% since 2020 while real wages stagnated ✦ 735 billionaires in the US alone ✦ Their combined wealth: $5.5 trillion
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="intro">
+            <h2 style="color: #ffd700; margin-bottom: 1rem;">Welcome to the Accountability Map</h2>
+            <p>This interactive map tracks publicly available information about billionaire properties, their proximity to struggling communities, and the stark contrast between concentrated wealth and public need. All data is sourced from public records, news reports, and financial disclosures.</p>
+            <p style="margin-top: 1rem;"><strong>Our Mission:</strong> To visualize wealth inequality not through abstract numbers, but through geographic proximity and community impact.</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="number">$5.5T</div>
+                <div class="label">Combined US Billionaire Wealth</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">735</div>
+                <div class="label">US Billionaires in 2024</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">3.8%</div>
+                <div class="label">Effective Tax Rate for Ultra-Wealthy</div>
+            </div>
+            <div class="stat-card">
+                <div class="number">$1.2M</div>
+                <div class="label">Average Home Price Near Their Properties</div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Featured Billionaires</h2>
+
+        <div class="filters">
+            <div class="filter-buttons">
+                <button class="filter-btn active" onclick="filterBillionaires('all')">All</button>
+                <button class="filter-btn" onclick="filterBillionaires('tech')">Tech</button>
+                <button class="filter-btn" onclick="filterBillionaires('retail')">Retail</button>
+                <button class="filter-btn" onclick="filterBillionaires('finance')">Finance</button>
+            </div>
+        </div>
+
+        <div class="billionaire-grid" id="billionaires">
+            <!-- Billionaire cards will be generated by JavaScript -->
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><strong>Data Sources:</strong> Forbes, ProPublica, Public Property Records, SEC Filings, News Reports</p>
+        <p style="margin-top: 1rem;">This is a satirical project highlighting wealth inequality through publicly available information.</p>
+        <div class="disclaimer">
+            <strong>Disclaimer:</strong> This website is satire and social commentary. All information presented is from publicly available sources. We do not encourage or condone any illegal activity, harassment, or trespassing. The purpose is to spark dialogue about wealth inequality and tax policy.
+        </div>
+    </div>
+
+    <script>
+        const billionaires = [
+            {
+                name: "Elon Musk",
+                netWorth: "$251 billion",
+                industry: "tech",
+                properties: [
+                    {
+                        location: "Austin, Texas (Primary Residence)",
+                        value: "$50,000 (claimed tiny house)",
+                        note: "Adjacent to $97M estate compound"
+                    },
+                    {
+                        location: "Boca Chica, Texas (SpaceX)",
+                        value: "Undisclosed",
+                        note: "Near community with median income $37,000"
+                    },
+                    {
+                        location: "Hawthorne, California (Tesla HQ area)",
+                        value: "Multiple properties sold",
+                        note: "City poverty rate: 9.8%"
+                    }
+                ],
+                contrasts: [
+                    "Tesla workers in Fremont earn median $41,000 while Musk's wealth increased $120B in 2021",
+                    "SpaceX launch site neighbors face buyout pressure and property devaluation",
+                    "Austin housing costs increased 48% since Tesla moved HQ, pricing out long-time residents"
+                ],
+                taxInfo: "Paid $0 in federal income tax in 2018 (ProPublica)",
+                workers: "127,000+ employees across companies"
+            },
+            {
+                name: "Jeff Bezos",
+                netWorth: "$194 billion",
+                industry: "retail",
+                properties: [
+                    {
+                        location: "Medina, Washington",
+                        value: "$165 million (compound)",
+                        note: "Median home in Seattle: $820,000"
+                    },
+                    {
+                        location: "Beverly Hills, California",
+                        value: "$175 million (Warner Estate)",
+                        note: "LA homeless population: 75,000+"
+                    },
+                    {
+                        location: "Maui, Hawaii",
+                        value: "$78 million",
+                        note: "Lahaina residents displaced, median income $65,000"
+                    },
+                    {
+                        location: "Washington, D.C.",
+                        value: "$23 million (former museum)",
+                        note: "Ward 8 poverty rate: 27%"
+                    }
+                ],
+                contrasts: [
+                    "Amazon warehouse workers earn median $31,200 while Bezos made $140,000 per minute in 2020",
+                    "His D.C. mansion is 15 miles from Amazon warehouses where workers lack AC during heat waves",
+                    "Maui property purchased while native Hawaiians face housing crisis and forced relocation"
+                ],
+                taxInfo: "Paid $0 in federal income tax in 2007 and 2011 (ProPublica)",
+                workers: "1.5 million Amazon employees worldwide"
+            },
+            {
+                name: "Mark Zuckerberg",
+                netWorth: "$177 billion",
+                industry: "tech",
+                properties: [
+                    {
+                        location: "Palo Alto, California",
+                        value: "$58 million (compound of 4 homes)",
+                        note: "Bought neighbors' homes for privacy"
+                    },
+                    {
+                        location: "Kauai, Hawaii",
+                        value: "$270 million (1,400 acre estate)",
+                        note: "Built 6-foot wall, locals call it 'Zuckerberg's Wall'"
+                    },
+                    {
+                        location: "Lake Tahoe, Nevada",
+                        value: "$59 million (2 estates)",
+                        note: "Nearby Incline Village workers commute 50+ miles for affordable housing"
+                    }
+                ],
+                contrasts: [
+                    "Meta contract workers in Bay Area earn $64,000 while unable to afford local housing",
+                    "Kauai residents sued over beach access blocked by his estate's security",
+                    "His Palo Alto purchases displaced long-time neighbors, inflating area property values 40%"
+                ],
+                taxInfo: "Estimated 15% tax rate through stock options loopholes",
+                workers: "86,000+ Meta employees"
+            },
+            {
+                name: "Larry Ellison",
+                netWorth: "$158 billion",
+                industry: "tech",
+                properties: [
+                    {
+                        location: "Lanai, Hawaii",
+                        value: "$300 million (owns 98% of island)",
+                        note: "3,000 island residents, median income $48,000"
+                    },
+                    {
+                        location: "Malibu, California",
+                        value: "$80+ million (multiple estates)",
+                        note: "Malibu homeless encampments 5 miles away"
+                    },
+                    {
+                        location: "Lake Tahoe, Nevada",
+                        value: "$43 million",
+                        note: "Service workers commute hours for $15/hr jobs"
+                    }
+                ],
+                contrasts: [
+                    "Owns entire Hawaiian island while residents have limited access to beaches they historically used",
+                    "Lanai water infrastructure struggles while his resorts consume majority of island's water",
+                    "Oracle's H1-B workers in Bay Area face housing costs consuming 60% of income"
+                ],
+                taxInfo: "Sued IRS and won, reducing tax burden on stock options",
+                workers: "164,000+ Oracle employees"
+            },
+            {
+                name: "Warren Buffett",
+                netWorth: "$133 billion",
+                industry: "finance",
+                properties: [
+                    {
+                        location: "Omaha, Nebraska",
+                        value: "$31,500 (purchased in 1958, current value ~$1M)",
+                        note: "Modest compared to peers, but still in exclusive neighborhood"
+                    },
+                    {
+                        location: "Laguna Beach, California",
+                        value: "$11 million (vacation home)",
+                        note: "Orange County homeless population: 7,000+"
+                    }
+                ],
+                contrasts: [
+                    "Claims modest lifestyle while Berkshire Hathaway's portfolio includes private jets and luxury goods",
+                    "Owns mobile home parks through Clayton Homes charging lot rent to residents earning $25,000/year",
+                    "Berkshire portfolio companies employ 383,000 at median wages while his wealth compounds tax-free"
+                ],
+                taxInfo: "Famously pays lower tax rate than his secretary (admitted publicly)",
+                workers: "383,000+ across Berkshire Hathaway companies"
+            },
+            {
+                name: "Michael Bloomberg",
+                netWorth: "$106 billion",
+                industry: "finance",
+                properties: [
+                    {
+                        location: "New York, Upper East Side",
+                        value: "$79 million (townhouse complex)",
+                        note: "6 miles from Bronx, highest poverty rate in NYC (28%)"
+                    },
+                    {
+                        location: "London, England",
+                        value: "$25 million",
+                        note: "UK wealth inequality at 50-year high"
+                    },
+                    {
+                        location: "Bermuda",
+                        value: "$20 million",
+                        note: "Registered for tax purposes"
+                    },
+                    {
+                        location: "Vail, Colorado",
+                        value: "$44 million",
+                        note: "Resort workers earn $35,000, can't afford housing"
+                    }
+                ],
+                contrasts: [
+                    "NYC townhouse worth more than entire annual budget of some NYC public schools",
+                    "As mayor, oversaw stop-and-frisk while living in exclusive $79M complex",
+                    "Spent $1 billion on failed presidential campaign—enough to give every NYC teacher $23,000"
+                ],
+                taxInfo: "Uses Bermuda tax strategies for Bloomberg LP profits",
+                workers: "20,000+ Bloomberg LP employees"
+            }
+        ];
+
+        function renderBillionaires(filter = 'all') {
+            const container = document.getElementById('billionaires');
+            const filtered = filter === 'all' ? billionaires : billionaires.filter(b => b.industry === filter);
+            
+            container.innerHTML = filtered.map(b => `
+                <div class="billionaire-card">
+                    <div class="billionaire-header">
+                        <div>
+                            <h3 class="billionaire-name">${b.name}</h3>
+                            <div class="net-worth">Net Worth: ${b.netWorth}</div>
+                            <p style="color: #888; margin-top: 0.5rem;">Industry: ${b.industry.charAt(0).toUpperCase() + b.industry.slice(1)} | ${b.workers} workers</p>
+                        </div>
+                    </div>
+                    
+                    <div style="background: rgba(233,69,96,0.1); padding: 1rem; border-radius: 5px; margin: 1rem 0;">
+                        <strong style="color: #e94560;">Tax Reality:</strong> ${b.taxInfo}
+                    </div>
+
+                    <div class="properties-section">
+                        <h4>🏰 Known Properties & Community Context</h4>
+                        ${b.properties.map(p => `
+                            <div class="property">
+                                <div class="property-location">${p.location}</div>
+                                <div style="margin-top: 0.5rem;">Estimated Value: ${p.value}</div>
+                                <div style="margin-top: 0.5rem; color: #ffd700; font-style: italic;">${p.note}</div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="contrast-section">
+                        <h4>⚖️ The Contrast</h4>
+                        ${b.contrasts.map(c => `
+                            <div class="contrast-item">
+                                <span class="impact-highlight">•</span> ${c}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterBillionaires(filter) {
+            // Update active button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Render filtered results
+            renderBillionaires(filter);
+        }
+
+        // Initial render
+        renderBillionaires();
+    </script>
+</body>
+</html>
