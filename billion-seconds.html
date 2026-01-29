@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Billion Seconds | Visualizing Wealth Inequality</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #000000 0%, #1a1a2e 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 4px solid #00ff88;
+            box-shadow: 0 6px 20px rgba(0, 255, 136, 0.3);
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            color: #00ff88;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(0, 255, 136, 0.5); }
+            to { text-shadow: 0 0 30px rgba(0, 255, 136, 0.8); }
+        }
+
+        .header .subtitle {
+            font-size: 1.3rem;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .main-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .time-card {
+            background: rgba(0, 255, 136, 0.05);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .time-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .time-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 255, 136, 0.4);
+            border-color: #ffd700;
+        }
+
+        .time-card .label {
+            font-size: 1.5rem;
+            color: #00ff88;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .time-card .number {
+            font-size: 4rem;
+            color: #ffd700;
+            font-weight: bold;
+            margin: 1rem 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .time-card .description {
+            font-size: 1.1rem;
+            color: #e0e0e0;
+            margin-top: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .live-counter-section {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1) 0%, rgba(255, 215, 0, 0.1) 100%);
+            border: 3px solid #00ff88;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 3rem 0;
+            text-align: center;
+        }
+
+        .live-counter-section h2 {
+            font-size: 2.5rem;
+            color: #ffd700;
+            margin-bottom: 2rem;
+        }
+
+        .billionaire-counters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .counter-card {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .counter-card:hover {
+            border-color: #ffd700;
+            transform: scale(1.05);
+        }
+
+        .counter-name {
+            font-size: 1.4rem;
+            color: #00ff88;
+            margin-bottom: 0.5rem;
+        }
+
+        .counter-wealth {
+            font-size: 1.1rem;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        .live-earnings {
+            font-size: 2.5rem;
+            color: #ffd700;
+            font-weight: bold;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .earnings-label {
+            font-size: 0.9rem;
+            color: #00ff88;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .comparison-section {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid rgba(0, 255, 136, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-section:hover {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .comparison-section h3 {
+            color: #ffd700;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid rgba(0, 255, 136, 0.3);
+            padding-bottom: 1rem;
+        }
+
+        .comparison-item {
+            background: rgba(0, 255, 136, 0.05);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-left: 4px solid #00ff88;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-item:hover {
+            background: rgba(0, 255, 136, 0.1);
+            transform: translateX(10px);
+        }
+
+        .comparison-item .amount {
+            font-size: 2rem;
+            color: #ffd700;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .comparison-item .description {
+            font-size: 1.1rem;
+            color: #e0e0e0;
+        }
+
+        .visualization-section {
+            background: rgba(0, 0, 0, 0.5);
+            border: 3px solid #00ff88;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 3rem 0;
+        }
+
+        .visualization-section h2 {
+            color: #ffd700;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .visual-bar-container {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+
+        .visual-bar-label {
+            color: #00ff88;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .visual-bar {
+            height: 40px;
+            background: linear-gradient(90deg, #00ff88 0%, #ffd700 100%);
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        .visual-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .visual-bar-tiny {
+            height: 40px;
+            background: #00ff88;
+            border-radius: 20px;
+            width: 3%;
+            max-width: 50px;
+        }
+
+        .interactive-calculator {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(0, 255, 136, 0.1) 100%);
+            border: 3px solid #ffd700;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 3rem 0;
+        }
+
+        .interactive-calculator h2 {
+            color: #ffd700;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .calculator-input {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .input-group label {
+            color: #00ff88;
+            font-size: 1.2rem;
+        }
+
+        .input-group input,
+        .input-group select {
+            padding: 1rem;
+            font-size: 1.1rem;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #00ff88;
+            border-radius: 10px;
+            color: #ffd700;
+            font-family: 'Courier New', monospace;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .calculator-result {
+            margin-top: 2rem;
+            padding: 2rem;
+            background: rgba(0, 255, 136, 0.1);
+            border: 2px solid #00ff88;
+            border-radius: 15px;
+            text-align: center;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .calculator-result .result-text {
+            font-size: 1.3rem;
+            color: #e0e0e0;
+            margin-bottom: 1rem;
+        }
+
+        .calculator-result .result-number {
+            font-size: 3rem;
+            color: #ffd700;
+            font-weight: bold;
+        }
+
+        .footer {
+            background: #000000;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 5rem;
+            border-top: 4px solid #00ff88;
+        }
+
+        .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .footer h3 {
+            color: #ffd700;
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer p {
+            color: #e0e0e0;
+            margin: 1rem 0;
+            font-size: 1.1rem;
+        }
+
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff88, transparent);
+            margin: 4rem 0;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .time-card .number {
+                font-size: 3rem;
+            }
+
+            .live-earnings {
+                font-size: 2rem;
+            }
+
+            .comparison-item .amount {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⏰ A BILLION SECONDS ⏰</h1>
+        <p class="subtitle">Understanding Wealth Through Time</p>
+    </div>
+
+    <div class="container">
+        <!-- Main Time Comparison -->
+        <div class="main-comparison">
+            <div class="time-card">
+                <div class="label">ONE THOUSAND SECONDS</div>
+                <div class="number">17</div>
+                <div class="description">minutes</div>
+                <p style="margin-top: 1rem; color: #888;">About the time to make a sandwich</p>
+            </div>
+
+            <div class="time-card">
+                <div class="label">ONE MILLION SECONDS</div>
+                <div class="number">11.5</div>
+                <div class="description">days</div>
+                <p style="margin-top: 1rem; color: #888;">A nice vacation</p>
+            </div>
+
+            <div class="time-card" style="border-color: #ffd700; box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);">
+                <div class="label" style="color: #ffd700;">ONE BILLION SECONDS</div>
+                <div class="number" style="font-size: 4.5rem;">31.7</div>
+                <div class="description" style="color: #ffd700; font-size: 1.3rem;">YEARS</div>
+                <p style="margin-top: 1rem; color: #888;">Longer than most careers</p>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Live Counter Section -->
+        <div class="live-counter-section">
+            <h2>💸 Live Wealth Accumulation Counter</h2>
+            <p style="font-size: 1.2rem; color: #e0e0e0; margin-bottom: 2rem;">
+                Watch billionaire wealth grow in real-time while you read this page
+            </p>
+
+            <div class="billionaire-counters">
+                <div class="counter-card">
+                    <div class="counter-name">Elon Musk</div>
+                    <div class="counter-wealth">Net Worth: $251 billion</div>
+                    <div class="earnings-label">Earned Since Page Load</div>
+                    <div class="live-earnings" id="musk-counter">$0</div>
+                    <p style="color: #888; margin-top: 1rem;">~$160/second (2023 avg)</p>
+                </div>
+
+                <div class="counter-card">
+                    <div class="counter-name">Jeff Bezos</div>
+                    <div class="counter-wealth">Net Worth: $194 billion</div>
+                    <div class="earnings-label">Earned Since Page Load</div>
+                    <div class="live-earnings" id="bezos-counter">$0</div>
+                    <p style="color: #888; margin-top: 1rem;">~$140,000/minute (2020 peak)</p>
+                </div>
+
+                <div class="counter-card">
+                    <div class="counter-name">Bernard Arnault</div>
+                    <div class="counter-wealth">Net Worth: $179 billion</div>
+                    <div class="earnings-label">Earned Since Page Load</div>
+                    <div class="live-earnings" id="arnault-counter">$0</div>
+                    <p style="color: #888; margin-top: 1rem;">~$110/second (2023 avg)</p>
+                </div>
+            </div>
+
+            <p style="margin-top: 2rem; color: #00ff88; font-size: 1.1rem;">
+                * Based on average wealth increase from previous years. Actual earnings vary by market conditions.
+            </p>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- What Could You Do With a Billion Seconds? -->
+        <div class="comparison-grid">
+            <div class="comparison-section">
+                <h3>🎓 What Could You Do With 31.7 Years?</h3>
+                <div class="comparison-item">
+                    <div class="amount">4-6</div>
+                    <div class="description">Complete bachelor's degrees (4 years each)</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="amount">15+</div>
+                    <div class="description">Master's degrees (2 years each)</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="amount">63,400</div>
+                    <div class="description">Books read (assuming 3 books/week)</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="amount">277,000</div>
+                    <div class="description">Hours of work at a full-time job</div>
+                </div>
+            </div>
+
+            <div class="comparison-section">
+                <h3>💰 What Could $1 Billion Buy?</h3>
+                <div class="comparison-item">
+                    <div class="amount">20,000</div>
+                    <div class="description">Full 4-year college scholarships ($50k each)</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="amount">10,000</div>
+                    <div class="description">Median US homes ($100k each)</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="amount">50,000</div>
+                    <div class="description">Years of median US salary ($20k/year)</div>
+                </div>
+                <div class="comparison-item">
+                    <div class="amount">1,000</div>
+                    <div class="description">Fully-staffed public schools built</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Visualization -->
+        <div class="visualization-section">
+            <h2>📊 Visual Scale Comparison</h2>
+            <p style="text-align: center; color: #e0e0e0; margin-bottom: 2rem; font-size: 1.2rem;">
+                If this bar represents one billion seconds (31.7 years)...
+            </p>
+
+            <div class="visual-bar-container">
+                <div class="visual-bar-label">
+                    <span>1 Billion Seconds = 31.7 Years</span>
+                    <span style="color: #ffd700;">█████████████████████████████████</span>
+                </div>
+                <div class="visual-bar"></div>
+            </div>
+
+            <div class="visual-bar-container">
+                <div class="visual-bar-label">
+                    <span>1 Million Seconds = 11.5 Days</span>
+                    <span style="color: #ffd700;">█</span>
+                </div>
+                <div class="visual-bar-tiny"></div>
+                <p style="color: #888; margin-top: 1rem; font-style: italic;">
+                    The difference between a million and a billion is astronomical. 
+                    A billion is 1,000 times larger than a million.
+                </p>
+            </div>
+
+            <div style="margin-top: 3rem; padding: 2rem; background: rgba(255, 215, 0, 0.1); border-radius: 10px;">
+                <h3 style="color: #ffd700; margin-bottom: 1rem; text-align: center;">The Billionaire Reality</h3>
+                <p style="color: #e0e0e0; font-size: 1.1rem; text-align: center;">
+                    If someone earned <span style="color: #ffd700; font-weight: bold;">$5,000 per day</span> 
+                    (more than most people make in a month), every single day since 
+                    <span style="color: #ffd700; font-weight: bold;">Columbus reached the Americas in 1492</span>, 
+                    they still wouldn't have $1 billion yet.
+                </p>
+                <p style="color: #00ff88; font-size: 1.2rem; text-align: center; margin-top: 1rem; font-weight: bold;">
+                    They'd need to keep earning until the year 2040 to reach $1 billion.
+                </p>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Interactive Calculator -->
+        <div class="interactive-calculator">
+            <h2>🧮 Wealth Scale Calculator</h2>
+            <p style="text-align: center; color: #e0e0e0; margin-bottom: 2rem; font-size: 1.1rem;">
+                How long would it take you to earn a billionaire's wealth?
+            </p>
+
+            <div class="calculator-input">
+                <div class="input-group">
+                    <label for="salary">Your Annual Salary ($)</label>
+                    <input type="number" id="salary" placeholder="50000" value="50000">
+                </div>
+
+                <div class="input-group">
+                    <label for="billionaire">Select a Billionaire</label>
+                    <select id="billionaire">
+                        <option value="251000000000">Elon Musk - $251 billion</option>
+                        <option value="194000000000">Jeff Bezos - $194 billion</option>
+                        <option value="177000000000">Mark Zuckerberg - $177 billion</option>
+                        <option value="158000000000">Larry Ellison - $158 billion</option>
+                        <option value="133000000000">Warren Buffett - $133 billion</option>
+                        <option value="106000000000">Michael Bloomberg - $106 billion</option>
+                        <option value="1000000000">Generic Billionaire - $1 billion</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="calculator-result" id="result">
+                <div class="result-text">Enter your salary and select a billionaire to calculate</div>
+            </div>
+        </div>
+
+        <div class="section-divider"></div>
+
+        <!-- Additional Context -->
+        <div class="comparison-grid">
+            <div class="comparison-section">
+                <h3>⏱️ Billionaire Earnings in Different Time Scales</h3>
+                <div class="comparison-item">
+                    <div class="amount">$160/second</div>
+                    <div class="description">Elon Musk's average wealth increase (2023)</div>
+                    <p style="color: #888; margin-top: 0.5rem;">More in one second than many earn in a day</p>
+                </div>
+                <div class="comparison-item">
+                    <div class="amount">$9,600/minute</div>
+                    <div class="description">What Musk earns while you brush your teeth</div>
+                    <p style="color: #888; margin-top: 0.5rem;">More than median monthly rent</p>
+                </div>
+                <div class="comparison-item">
+                    <div class="amount">$576,000/hour</div>
+                    <div class="description">Earnings during a typical commute</div>
+                    <p style="color: #888; margin-top: 0.5rem;">More than 10x the median annual salary</p>
+                </div>
+                <div class="comparison-item">
+                    <div class="amount">$13.8M/day</div>
+                    <div class="description">Daily wealth increase (24 hours)</div>
+                    <p style="color: #888; margin-top: 0.5rem;">Enough to buy a mansion every single day</p>
+                </div>
+            </div>
+
+            <div class="comparison-section">
+                <h3>🌍 Global Context</h3>
+                <div class="comparison-item">
+                    <div class="amount">3.5 billion</div>
+                    <div class="description">People living on less than $6.85/day</div>
+                    <p style="color: #888; margin-top: 0.5rem;">Half of humanity</p>
+                </div>
+                <div class="comparison-item">
+                    <div class="amount">$11.4 billion</div>
+                    <div class="description">Cost to end world hunger for a year (UN estimate)</div>
+                    <p style="color: #888; margin-top: 0.5rem;">4.5% of Musk's net worth</p>
+                </div>
+                <div class="comparison-item">
+                    <div class="amount">$20 billion</div>
+                    <div class="description">Cost to provide clean water globally</div>
+                    <p style="color: #888; margin-top: 0.5rem;">8% of Musk's net worth</p>
+                </div>
+                <div class="comparison-item">
+                    <div class="amount">2.7 million</div>
+                    <div class="description">Years for average worker to earn $1 billion at median wage</div>
+                    <p style="color: #888; margin-top: 0.5rem;">That's 27,000 centuries of work</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <div class="footer-content">
+            <h3>Why This Matters</h3>
+            <p>
+                The human brain struggles to comprehend the scale of a billion. We use time as a reference 
+                because it's something we all experience equally. Whether you're a billionaire or work 
+                minimum wage, we all get the same 86,400 seconds per day.
+            </p>
+            <p style="margin-top: 1.5rem;">
+                This visualization aims to make the incomprehensible comprehensible—to show that the 
+                difference between a million and a billion isn't just three zeros, it's the difference 
+                between 11 days and 32 years.
+            </p>
+            <p style="margin-top: 1.5rem; color: #00ff88; font-weight: bold;">
+                Data sources: Forbes, ProPublica, Federal Reserve, World Bank, United Nations
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Live counter functionality
+        let secondsElapsed = 0;
+
+        // Earnings per second (based on reported annual wealth increases)
+        const earningsPerSecond = {
+            musk: 160,      // Approximate based on 2023 wealth increase
+            bezos: 115,     // Conservative estimate
+            arnault: 110    // Based on 2023 data
+        };
+
+        function updateCounters() {
+            secondsElapsed++;
+            
+            document.getElementById('musk-counter').textContent = 
+                '$' + (secondsElapsed * earningsPerSecond.musk).toLocaleString();
+            
+            document.getElementById('bezos-counter').textContent = 
+                '$' + (secondsElapsed * earningsPerSecond.bezos).toLocaleString();
+            
+            document.getElementById('arnault-counter').textContent = 
+                '$' + (secondsElapsed * earningsPerSecond.arnault).toLocaleString();
+        }
+
+        // Update counters every second
+        setInterval(updateCounters, 1000);
+
+        // Calculator functionality
+        function calculateTime() {
+            const salary = parseFloat(document.getElementById('salary').value) || 0;
+            const billionaireWealth = parseFloat(document.getElementById('billionaire').value);
+            const resultDiv = document.getElementById('result');
+
+            if (salary <= 0) {
+                resultDiv.innerHTML = '<div class="result-text">Please enter a valid salary</div>';
+                return;
+            }
+
+            const years = billionaireWealth / salary;
+            const billionaireName = document.getElementById('billionaire').selectedOptions[0].text.split(' - ')[0];
+
+            let contextMessage = '';
+            if (years > 1000000) {
+                const millions = (years / 1000000).toFixed(1);
+                contextMessage = `That's ${millions} MILLION years—longer than humans have existed!`;
+            } else if (years > 100000) {
+                contextMessage = `That's longer than all of recorded human history!`;
+            } else if (years > 1000) {
+                contextMessage = `That's longer than the United States has existed!`;
+            } else {
+                contextMessage = `That's ${Math.floor(years / 100)} centuries of work!`;
+            }
+
+            resultDiv.innerHTML = `
+                <div class="result-text">Working at $${salary.toLocaleString()}/year, it would take you:</div>
+                <div class="result-number">${years.toLocaleString(undefined, {maximumFractionDigits: 0})} years</div>
+                <div class="result-text" style="margin-top: 1rem;">to earn ${billionaireName}'s current wealth</div>
+                <div class="result-text" style="margin-top: 1rem; color: #ffd700; font-weight: bold;">${contextMessage}</div>
+                <div class="result-text" style="margin-top: 1rem; color: #888; font-size: 0.9rem;">
+                    (Assuming you never spend a single dollar and pay no taxes)
+                </div>
+            `;
+        }
+
+        // Add event listeners
+        document.getElementById('salary').addEventListener('input', calculateTime);
+        document.getElementById('billionaire').addEventListener('change', calculateTime);
+
+        // Initial calculation
+        calculateTime();
+    </script>
+</body>
+</html>
