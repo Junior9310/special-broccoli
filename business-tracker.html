@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Trump Business Empire - Litigation Portfolio</title>
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --dark-gold: #AA8C2C;
+            --rich-black: #0F0F0F;
+            --red-ink: #C90000;
+            --money-green: #2ecc71;
+        }
+
+        body {
+            background-color: var(--rich-black);
+            color: #fff;
+            font-family: 'Playfair Display', serif; /* A "luxury" font */
+            margin: 0;
+            padding: 0;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000 100%);
+        }
+
+        /* Utility Classes */
+        .text-gold { color: var(--gold); }
+        .text-red { color: var(--red-ink); }
+        .text-center { text-align: center; }
+        .uppercase { text-transform: uppercase; }
+
+        header {
+            border-bottom: 4px solid var(--gold);
+            padding: 40px 20px;
+            text-align: center;
+            background: linear-gradient(180deg, #000 0%, #1a1a1a 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin: 0;
+            text-shadow: 2px 2px 0px var(--dark-gold);
+            letter-spacing: 2px;
+        }
+
+        .tagline {
+            font-family: 'Arial', sans-serif;
+            font-style: italic;
+            color: #888;
+            margin-top: 10px;
+        }
+
+        .ribbon {
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: var(--red-ink);
+            color: white;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+            font-family: sans-serif;
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .metric-card {
+            border: 2px solid var(--gold);
+            padding: 20px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            transition: transform 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .big-number {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--gold);
+            display: block;
+        }
+
+        /* Timeline Section */
+        .section-header {
+            text-align: center;
+            margin: 60px 0 30px;
+            font-size: 2.5rem;
+            color: var(--gold);
+            text-transform: uppercase;
+            border-top: 1px solid #333;
+            padding-top: 40px;
+        }
+
+        .case-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .case-file {
+            background: #1a1a1a;
+            border-left: 5px solid var(--gold);
+            margin-bottom: 30px;
+            padding: 25px;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        .case-file.bankrupt { border-left-color: var(--red-ink); }
+        .case-file.fraud { border-left-color: #ff6b6b; }
+        .case-file.settled { border-left-color: #4ecdc4; }
+
+        .case-title {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .case-badge {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: sans-serif;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .badge-fail { background: var(--red-ink); color: white; }
+        .badge-settled { background: #555; color: white; }
+        .badge-convicted { background: #ff9f43; color: #000; }
+
+        .case-details {
+            color: #ccc;
+            line-height: 1.6;
+            font-family: sans-serif;
+        }
+
+        .satire-note {
+            margin-top: 15px;
+            font-style: italic;
+            color: var(--gold);
+            border-top: 1px solid #333;
+            padding-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        /* Bankruptcy Hall of Fame */
+        .hall-of-fame {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 20px;
+            background: linear-gradient(90deg, #111, #222, #111);
+            border-top: 2px solid var(--gold);
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .trophy {
+            min-width: 200px;
+            text-align: center;
+            padding: 20px;
+            background: #000;
+            border: 1px solid #333;
+        }
+
+        .trophy-icon { font-size: 3rem; margin-bottom: 10px; }
+
+        /* Wheel of Blame */
+        .interactive-zone {
+            text-align: center;
+            padding: 50px;
+            background: #151515;
+            margin-top: 50px;
+        }
+
+        .blame-btn {
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .blame-btn:hover {
+            background: #fff;
+            transform: scale(1.1);
+        }
+
+        #blame-result {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            min-height: 50px;
+            color: var(--red-ink);
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #555;
+            font-size: 0.8rem;
+            border-top: 1px solid #333;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .dashboard { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="ribbon">UNDER AUDIT</div>
+        <h1>THE TRUMP ORGANIZATION</h1>
+        <h2 style="font-size: 1.2rem; letter-spacing: 5px; color: var(--gold);">LEGAL DEFENSE FUND & CASINO</h2>
+        <p class="tagline">"Where the square footage is made up and the valuations don't matter."</p>
+    </header>
+
+    <div class="dashboard">
+        <div class="metric-card">
+            <span class="big-number">6</span>
+            <span>Corporate Bankruptcies</span>
+            <div style="font-size: 0.8em; color: #666;">(Strategic Debt Shedding™)</div>
+        </div>
+        <div class="metric-card">
+            <span class="big-number">17</span>
+            <span>Tax Fraud Counts</span>
+            <div style="font-size: 0.8em; color: #666;">(Guilty Verdicts - 2022)</div>
+        </div>
+        <div class="metric-card">
+            <span class="big-number">$25M</span>
+            <span>University Settlement</span>
+            <div style="font-size: 0.8em; color: #666;">(Degrees not included)</div>
+        </div>
+        <div class="metric-card">
+            <span class="big-number">1</span>
+            <span>CFOs sent to Rikers</span>
+            <div style="font-size: 0.8em; color: #666;">(Allen Weisselberg Loyalty Program)</div>
+        </div>
+    </div>
+
+    <h2 class="section-header">🏛️ The Bankruptcy Hall of Fame 🏛️</h2>
+    <p class="text-center" style="color: #888; margin-bottom: 20px;">"I do play with the bankruptcy laws - they're very good for me."</p>
+    
+    <div class="hall-of-fame">
+        <div class="trophy">
+            <div class="trophy-icon">🎰</div>
+            <h3>Taj Mahal</h3>
+            <p class="text-red">Chapter 11 (1991)</p>
+            <p style="font-size: 0.8rem;">"The 8th Wonder of the World (of Debt)"</p>
+        </div>
+        <div class="trophy">
+            <div class="trophy-icon">🏰</div>
+            <h3>Trump Castle</h3>
+            <p class="text-red">Chapter 11 (1992)</p>
+            <p style="font-size: 0.8rem;">Knocked down his own castle.</p>
+        </div>
+        <div class="trophy">
+            <div class="trophy-icon">🏨</div>
+            <h3>Plaza Hotel</h3>
+            <p class="text-red">Chapter 11 (1992)</p>
+            <p style="font-size: 0.8rem;">Too luxurious to succeed.</p>
+        </div>
+        <div class="trophy">
+            <div class="trophy-icon">🏢</div>
+            <h3>Plaza Associates</h3>
+            <p class="text-red">Chapter 11 (1992)</p>
+            <p style="font-size: 0.8rem;">Yes, again. 1992 was a busy year.</p>
+        </div>
+        <div class="trophy">
+            <div class="trophy-icon">🎲</div>
+            <h3>Hotels & Casinos</h3>
+            <p class="text-red">Chapter 11 (2004)</p>
+            <p style="font-size: 0.8rem;">The sequel nobody asked for.</p>
+        </div>
+        <div class="trophy">
+            <div class="trophy-icon">📉</div>
+            <h3>Entertainment Resorts</h3>
+            <p class="text-red">Chapter 11 (2009)</p>
+            <p style="font-size: 0.8rem;">Third time's a charm? No.</p>
+        </div>
+    </div>
+
+    <h2 class="section-header">📁 The Corporate Rap Sheet 📁</h2>
+
+    <div class="case-container">
+
+        <!-- Trump Org Criminal Tax Fraud -->
+        <div class="case-file fraud">
+            <div class="case-title">
+                The Trump Organization (Tax Fraud)
+                <span class="case-badge badge-convicted">GUILTY (17 COUNTS)</span>
+            </div>
+            <div class="case-details">
+                <p><strong>Year:</strong> 2022</p>
+                <p><strong>The Scheme:</strong> Paying executives "off the books" with luxury apartments, Mercedes-Benz leases, and private school tuition to avoid taxes.</p>
+                <p><strong>The Outcome:</strong> Found guilty on ALL 17 counts. Fined $1.6 million (pocket change). CFO Allen Weisselberg sent to Rikers Island.</p>
+                <div class="satire-note">
+                    CEO Response: "I didn't know anything about the finances of the company I ran for 40 years."
+                </div>
+            </div>
+        </div>
+
+        <!-- NY Civil Fraud -->
+        <div class="case-file fraud">
+            <div class="case-title">
+                NY Civil Fraud (Asset Inflation)
+                <span class="case-badge badge-convicted">LIABLE - $364M+</span>
+            </div>
+            <div class="case-details">
+                <p><strong>Year:</strong> 2024</p>
+                <p><strong>The Scheme:</strong> Claiming the Trump Tower penthouse was 30,000 sq ft (it's 11,000) and Mar-a-Lago was worth more than the entire GDP of Florida.</p>
+                <p><strong>The Outcome:</strong> Judge Engoron ruled persistent fraud. Massive fines. Court-appointed monitor installed (The Babysitter).</p>
+                <div class="satire-note">
+                    Business Strategy: "If you believe it's worth a billion dollars, it is. That's just positive thinking."
+                </div>
+            </div>
+        </div>
+
+        <!-- Trump University -->
+        <div class="case-file settled">
+            <div class="case-title">
+                Trump University
+                <span class="case-badge badge-settled">SETTLED ($25M)</span>
+            </div>
+            <div class="case-details">
+                <p><strong>Year:</strong> 2016</p>
+                <p><strong>The Pitch:</strong> Learn real estate secrets from hand-picked experts! (The experts were often retail salespeople).</p>
+                <p><strong>The Outcome:</strong> A $25 million settlement to students who realized a photo with a cardboard cutout of Trump wasn't a degree.</p>
+                <div class="satire-note">
+                    Fun Fact: It had a 98% approval rating... according to surveys students were forced to fill out before getting their certificates.
+                </div>
+            </div>
+        </div>
+
+        <!-- Trump Foundation -->
+        <div class="case-file bankrupt">
+            <div class="case-title">
+                The Trump Foundation
+                <span class="case-badge badge-fail">DISSOLVED</span>
+            </div>
+            <div class="case-details">
+                <p><strong>Year:</strong> 2018</p>
+                <p><strong>The Scheme:</strong> Using charity money to buy a $10,000 portrait of Trump, pay legal settlements, and buy a Tim Tebow helmet.</p>
+                <p><strong>The Outcome:</strong> Shut down by the NY Attorney General. Family ordered to undergo mandatory training on "how not to steal from charity."</p>
+                <div class="satire-note">
+                    Charitable Mission: "Charity begins at home. Specifically, Mar-a-Lago."
+                </div>
+            </div>
+        </div>
+
+        <!-- Housing Discrimination -->
+        <div class="case-file settled">
+            <div class="case-title">
+                DOJ Housing Discrimination
+                <span class="case-badge badge-settled">SETTLED</span>
+            </div>
+            <div class="case-details">
+                <p><strong>Year:</strong> 1973</p>
+                <p><strong>The Accusation:</strong> DOJ sued Trump Management for refusing to rent to Black tenants. Applications were allegedly marked with "C" for "Colored."</p>
+                <p><strong>The Outcome:</strong> Settled without admitting guilt (the classic move). Agreed to a consent decree.</p>
+                <div class="satire-note">
+                    Legacy: This was the origin story. The prequel to the Art of the Deal.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Interactive Section -->
+    <div class="interactive-zone">
+        <h2 style="color: var(--gold);">🎡 The Wheel of Corporate Accountability 🎡</h2>
+        <p>Something went wrong at the company? Click below to find out whose fault it is!</p>
+        
+        <button class="blame-btn" onclick="spinWheel()">SPIN THE WHEEL</button>
+        
+        <div id="blame-result"></div>
+    </div>
+
+    <footer>
+        <p>© 2025 The Trump Organization Courtroom Tracker (Satire Division).</p>
+        <p>This page is for entertainment purposes. The legal entities mentioned are real; the "strategic genius" described is debatable.</p>
+        <p style="font-size: 0.6rem; color: #333;">NO REFUNDS. NO COLLUSION. PERFECT HTML.</p>
+    </footer>
+
+    <script>
+        const excuses = [
+            "The Accountants (They went rogue!)",
+            "The Radical Left Democrats",
+            "The Judge (A hater!)",
+            "Michael Cohen (Rat!)",
+            "The Appraisers (They don't understand luxury!)",
+            "A Low-Level Coffee Boy",
+            "The Media (Fake News!)",
+            "Obama",
+            "The Windmills (They ruin property values!)"
+        ];
+
+        function spinWheel() {
+            const resultDiv = document.getElementById('blame-result');
+            const btn = document.querySelector('.blame-btn');
+            
+            resultDiv.style.opacity = '0.5';
+            resultDiv.innerHTML = "Thinking... (Processing Audit)...";
+            btn.disabled = true;
+
+            let count = 0;
+            const interval = setInterval(() => {
+                resultDiv.innerHTML = excuses[Math.floor(Math.random() * excuses.length)];
+                count++;
+                if(count > 10) {
+                    clearInterval(interval);
+                    finalizeSpin();
+                }
+            }, 100);
+        }
+
+        function finalizeSpin() {
+            const resultDiv = document.getElementById('blame-result');
+            const btn = document.querySelector('.blame-btn');
+            
+            // Randomly select an excuse
+            const finalExcuse = excuses[Math.floor(Math.random() * excuses.length)];
+            
+            resultDiv.style.opacity = '1';
+            resultDiv.innerHTML = `👉 FAULT FOUND: ${finalExcuse} <br><span style="font-size:0.8rem; color:#fff">(Definitely not the CEO)</span>`;
+            btn.disabled = false;
+        }
+    </script>
+</body>
+</html>
