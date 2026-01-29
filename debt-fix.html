@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The National Debt Solutions Store</title>
+    <style>
+        :root {
+            --debt-red: #ff3860;
+            --profit-green: #23d160;
+            --void-black: #0a0a0a;
+            --card-bg: #1f1f1f;
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--void-black);
+            color: #eee;
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* The Ticker */
+        .debt-header {
+            background: linear-gradient(180deg, #300 0%, #100 100%);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 5px solid var(--debt-red);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        }
+
+        .debt-label {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #aaa;
+            margin-bottom: 10px;
+        }
+
+        #live-debt {
+            font-family: 'Courier New', monospace;
+            font-size: 4rem;
+            color: var(--debt-red);
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255, 56, 96, 0.5);
+        }
+
+        /* Content Layout */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 1.2rem;
+            color: #ccc;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Strategy Cards */
+        .strategies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        .strategy-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid #333;
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .strategy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            border-color: #555;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            margin: 0 0 10px 0;
+            color: #fff;
+        }
+
+        .card-type {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .type-painful { background: #d35400; color: white; }
+        .type-absurd { background: #8e44ad; color: white; }
+        .type-scary { background: #c0392b; color: white; }
+        .type-boomer { background: #27ae60; color: white; }
+
+        .stat-row {
+            margin: 15px 0;
+            padding: 10px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #888;
+            display: block;
+        }
+
+        .stat-value {
+            font-size: 1.1rem;
+            color: #ddd;
+            font-weight: bold;
+        }
+
+        /* Probability Bar */
+        .probability-container {
+            margin-top: auto;
+            padding-top: 20px;
+        }
+        .prob-bar-bg {
+            height: 10px;
+            background: #333;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .prob-bar-fill {
+            height: 100%;
+            background: var(--profit-green);
+        }
+        
+        /* Personal Calculator */
+        .calculator-section {
+            background: #2c2c2c;
+            margin-top: 60px;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            border: 2px dashed #555;
+        }
+
+        .calc-input {
+            padding: 10px;
+            font-size: 1.2rem;
+            background: #111;
+            border: 1px solid #444;
+            color: #fff;
+            width: 200px;
+            text-align: center;
+        }
+
+        button.calc-btn {
+            padding: 10px 25px;
+            font-size: 1.2rem;
+            background: var(--profit-green);
+            color: #000;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 50px;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 600px) {
+            #live-debt { font-size: 2.5rem; }
+            .strategies-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="debt-header">
+        <div class="debt-label">Current US National Debt</div>
+        <div id="live-debt">$34,592,108,432,100</div>
+        <div style="font-size: 0.8rem; color: #ff3860; margin-top: 10px;">(+$45,000 every second that you stare at this)</div>
+    </div>
+
+    <div class="container">
+        <div class="intro">
+            <p>Welcome, concerned citizen! We owe more money than actually exists in the observable universe. But don't worry, we have solutions. Below are the most viable strategies to get our debt down to a "manageable" level (e.g., only owing 100% of our GDP).</p>
+        </div>
+
+        <div class="strategies-grid">
+
+            <!-- Strategy 1: The Fiscal Hawk -->
+            <div class="strategy-card">
+                <div class="card-icon">🦅</div>
+                <div class="card-title">The "Total Austerity" Plan</div>
+                <span class="card-type type-painful">Responsible & Painful</span>
+                
+                <p>We raise taxes to 60% for everyone, cancel the F-35 program, and replace Social Security checks with "thoughts and prayers."</p>
+
+                <div class="stat-row">
+                    <span class="stat-label">Time to Fix:</span>
+                    <span class="stat-value">45 Years</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">What Needs to Change:</span>
+                    <span class="stat-value">Politicians must become allergic to getting re-elected.</span>
+                </div>
+
+                <div class="probability-container">
+                    <span class="stat-label">Probability of Happening: 2%</span>
+                    <div class="prob-bar-bg"><div class="prob-bar-fill" style="width: 2%; background: var(--debt-red);"></div></div>
+                </div>
+            </div>
+
+            <!-- Strategy 2: The Garage Sale -->
+            <div class="strategy-card">
+                <div class="card-icon">🗺️</div>
+                <div class="card-title">The "Great American Garage Sale"</div>
+                <span class="card-type type-absurd">Creative Liquidation</span>
+                
+                <p>We sell Florida to Disney, Montana to Canada, and lease the Grand Canyon to a storage unit company.</p>
+
+                <div class="stat-row">
+                    <span class="stat-label">Time to Fix:</span>
+                    <span class="stat-value">Overnight (Escrow pending)</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">What Needs to Change:</span>
+                    <span class="stat-value">The number of stars on the flag (saves money on thread too).</span>
+                </div>
+
+                <div class="probability-container">
+                    <span class="stat-label">Probability of Happening: 15%</span>
+                    <div class="prob-bar-bg"><div class="prob-bar-fill" style="width: 15%; background: orange;"></div></div>
+                </div>
+            </div>
+
+            <!-- Strategy 3: The Avocado Toast -->
+            <div class="strategy-card">
+                <div class="card-icon">🥑</div>
+                <div class="card-title">The "Millennial Mindset" Fix</div>
+                <span class="card-type type-boomer">Personal Finance</span>
+                
+                <p>If the government just stops buying Starbucks and makes coffee at home, and cancels its Netflix subscription.</p>
+
+                <div class="stat-row">
+                    <span class="stat-label">Time to Fix:</span>
+                    <span class="stat-value">3.4 Billion Years</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">What Needs to Change:</span>
+                    <span class="stat-value">Basic arithmetic and understanding of scale.</span>
+                </div>
+
+                <div class="probability-container">
+                    <span class="stat-label">Probability of Happening: 0%</span>
+                    <div class="prob-bar-bg"><div class="prob-bar-fill" style="width: 1%;"></div></div>
+                </div>
+            </div>
+
+            <!-- Strategy 4: The Trillion Dollar Coin -->
+            <div class="strategy-card">
+                <div class="card-icon">🪙</div>
+                <div class="card-title">The Magic Platinum Coin</div>
+                <span class="card-type type-scary">Economic Voodoo</span>
+                
+                <p>The Treasury mints a single coin worth $35 Trillion, deposits it at the Fed, and says "Keep the change."</p>
+
+                <div class="stat-row">
+                    <span class="stat-label">Time to Fix:</span>
+                    <span class="stat-value">15 Minutes</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">What Needs to Change:</span>
+                    <span class="stat-value">The definition of "money" and our grip on reality.</span>
+                </div>
+
+                <div class="probability-container">
+                    <span class="stat-label">Probability of Happening: 30%</span>
+                    <div class="prob-bar-bg"><div class="prob-bar-fill" style="width: 30%; background: yellow;"></div></div>
+                </div>
+            </div>
+
+            <!-- Strategy 5: Inflation -->
+            <div class="strategy-card">
+                <div class="card-icon">🎈</div>
+                <div class="card-title">Just Inflate It Away</div>
+                <span class="card-type type-painful">The "Silent Tax"</span>
+                
+                <p>We print so much money that the debt stays the same number, but a loaf of bread costs $4,000.</p>
+
+                <div class="stat-row">
+                    <span class="stat-label">Time to Fix:</span>
+                    <span class="stat-value">10 Years</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">What Needs to Change:</span>
+                    <span class="stat-value">Your willingness to carry cash in a wheelbarrow.</span>
+                </div>
+
+                <div class="probability-container">
+                    <span class="stat-label">Probability of Happening: 95%</span>
+                    <div class="prob-bar-bg"><div class="prob-bar-fill" style="width: 95%; background: var(--profit-green);"></div></div>
+                </div>
+            </div>
+
+             <!-- Strategy 6: The Space Miner -->
+             <div class="strategy-card">
+                <div class="card-icon">☄️</div>
+                <div class="card-title">Asteroid Mining</div>
+                <span class="card-type type-absurd">Sci-Fi Dream</span>
+                
+                <p>Elon Musk lassos a gold-heavy asteroid, crashes it into Nevada, and we pay off the debt with space rocks.</p>
+
+                <div class="stat-row">
+                    <span class="stat-label">Time to Fix:</span>
+                    <span class="stat-value">2050 (maybe)</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">What Needs to Change:</span>
+                    <span class="stat-value">The laws of physics and the price of gold crashing to zero.</span>
+                </div>
+
+                <div class="probability-container">
+                    <span class="stat-label">Probability of Happening: 5%</span>
+                    <div class="prob-bar-bg"><div class="prob-bar-fill" style="width: 5%; background: purple;"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="calculator-section">
+            <h2 style="color: var(--profit-green);">💰 Do Your Part! 💰</h2>
+            <p>If you don't like the ideas above, you can just pay it yourself.</p>
+            <p>Enter how much cash you have in your pocket right now:</p>
+            
+            <input type="number" id="userCash" class="calc-input" placeholder="$20">
+            <button class="calc-btn" onclick="calculateImpact()">Donate to Treasury</button>
+
+            <div id="result-msg" style="margin-top: 20px; font-size: 1.1rem; color: #fff; min-height: 50px;"></div>
+        </div>
+    </div>
+
+    <footer>
+        <p>This page serves as a satirical visualization of a very real problem that nobody wants to talk about at parties.</p>
+        <p>© 2024 The Department of Unsolvable Math Problems</p>
+    </footer>
+
+    <script>
+        // Start Debt at approx 34.5 Trillion
+        let currentDebt = 34592108432100;
+        
+        // Update function
+        function updateDebt() {
+            // Add roughly $45,000 per second (randomized for effect)
+            const increment = Math.floor(Math.random() * 5000) + 1000;
+            currentDebt += increment;
+            
+            // Format number
+            const formatted = new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                maximumFractionDigits: 0
+            }).format(currentDebt);
+
+            document.getElementById('live-debt').innerText = formatted;
+        }
+
+        // Run ticker rapidly
+        setInterval(updateDebt, 100);
+
+        // Calculator function
+        function calculateImpact() {
+            const input = document.getElementById('userCash').value;
+            const amount = parseFloat(input);
+            const msg = document.getElementById('result-msg');
+
+            if (!amount || amount <= 0) {
+                msg.innerText = "You have to give something! The interest alone is $2 million per minute!";
+                msg.style.color = "var(--debt-red)";
+                return;
+            }
+
+            const percentage = (amount / currentDebt) * 100;
+            const years = (currentDebt / 2000000000000); // Rough yearly revenue surplus hypothetical
+
+            msg.innerHTML = `Thanks! You have paid off <strong style="color:yellow">0.00000000${percentage.toFixed(10)}%</strong> of the debt.<br><br>
+            At this rate, if everyone chips in, we will be debt-free in the year <strong>94,024 AD</strong>.`;
+            msg.style.color = "#eee";
+        }
+    </script>
+</body>
+</html>
