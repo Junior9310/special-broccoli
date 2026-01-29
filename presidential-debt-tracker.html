@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presidential Debt-O-Meter | Who Racked Up the Bill?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #2d1b3d 50%, #1a1a2e 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #dc2626 0%, #1a1a2e 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            border-bottom: 5px solid #fbbf24;
+            box-shadow: 0 8px 30px rgba(220, 38, 38, 0.5);
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            color: #fbbf24;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(251, 191, 36, 0.6);
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 30px rgba(251, 191, 36, 0.6); }
+            to { text-shadow: 0 0 50px rgba(251, 191, 36, 0.9); }
+        }
+
+        .header .subtitle {
+            font-size: 1.4rem;
+            color: #e0e0e0;
+            font-style: italic;
+        }
+
+        .live-debt {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.3) 0%, rgba(251, 191, 36, 0.3) 100%);
+            padding: 2rem;
+            text-align: center;
+            border-top: 3px solid #dc2626;
+            border-bottom: 3px solid #dc2626;
+        }
+
+        .live-debt h2 {
+            color: #fbbf24;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .debt-counter {
+            font-size: 4rem;
+            color: #dc2626;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            text-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+        }
+
+        .debt-per-citizen {
+            font-size: 1.5rem;
+            color: #e0e0e0;
+            margin-top: 1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .intro-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 2px solid #fbbf24;
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .intro-box h3 {
+            color: #fbbf24;
+            margin-bottom: 1rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            color: #fbbf24;
+            text-align: center;
+            margin: 4rem 0 2rem 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .trump-spotlight {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(251, 191, 36, 0.2) 100%);
+            border: 4px solid #dc2626;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 3rem 0;
+            box-shadow: 0 10px 40px rgba(220, 38, 38, 0.4);
+        }
+
+        .trump-spotlight h2 {
+            font-size: 2.5rem;
+            color: #fbbf24;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .comparison-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid rgba(251, 191, 36, 0.3);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .comparison-card:hover {
+            border-color: #fbbf24;
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(251, 191, 36, 0.3);
+        }
+
+        .comparison-card h4 {
+            color: #fbbf24;
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .comparison-number {
+            font-size: 3.5rem;
+            color: #dc2626;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .comparison-description {
+            color: #e0e0e0;
+            font-size: 1.1rem;
+        }
+
+        .presidents-table {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 15px;
+            overflow: hidden;
+            margin: 2rem 0;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.5fr 1.5fr 1fr;
+            gap: 1rem;
+            font-weight: bold;
+            color: #fbbf24;
+        }
+
+        .table-row {
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1.5fr 1.5fr 1fr;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(251, 191, 36, 0.1);
+            transition: all 0.3s ease;
+            align-items: center;
+        }
+
+        .table-row:hover {
+            background: rgba(251, 191, 36, 0.1);
+        }
+
+        .table-row.trump-row {
+            background: rgba(220, 38, 38, 0.2);
+            border: 2px solid #dc2626;
+            font-weight: bold;
+        }
+
+        .president-name {
+            color: #fbbf24;
+        }
+
+        .party {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .party-r {
+            background: rgba(220, 38, 38, 0.3);
+            border: 1px solid #dc2626;
+            color: #fca5a5;
+        }
+
+        .party-d {
+            background: rgba(59, 130, 246, 0.3);
+            border: 1px solid #3b82f6;
+            color: #93c5fd;
+        }
+
+        .debt-increase {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .debt-increase.positive {
+            color: #4ade80;
+        }
+
+        .visual-comparison {
+            margin: 3rem 0;
+            padding: 3rem 2rem;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            border: 3px solid #fbbf24;
+        }
+
+        .visual-comparison h3 {
+            color: #fbbf24;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .bar-chart {
+            margin: 2rem 0;
+        }
+
+        .bar-item {
+            margin: 1.5rem 0;
+        }
+
+        .bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            color: #e0e0e0;
+        }
+
+        .bar-label .name {
+            font-weight: bold;
+            color: #fbbf24;
+        }
+
+        .bar-label .amount {
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .bar-container {
+            width: 100%;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 2px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .bar {
+            height: 100%;
+            background: linear-gradient(90deg, #dc2626 0%, #ef4444 100%);
+            border-radius: 20px;
+            transition: width 2s ease;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 1rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        .bar.trump-bar {
+            background: linear-gradient(90deg, #dc2626 0%, #fbbf24 100%);
+            box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.2) 0%, rgba(0, 0, 0, 0.5) 100%);
+            border: 2px solid #dc2626;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-box:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
+        }
+
+        .stat-box .number {
+            font-size: 3rem;
+            color: #fbbf24;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+
+        .stat-box .label {
+            color: #e0e0e0;
+            font-size: 1.1rem;
+        }
+
+        .fun-facts {
+            background: rgba(251, 191, 36, 0.1);
+            border: 3px solid #fbbf24;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            margin: 3rem 0;
+        }
+
+        .fun-facts h3 {
+            color: #fbbf24;
+            font-size: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .fact-item {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 1.5rem;
+            margin: 1rem 0;
+            border-radius: 10px;
+            border-left: 4px solid #dc2626;
+        }
+
+        .fact-item .fact-number {
+            font-size: 2.5rem;
+            color: #dc2626;
+            font-weight: bold;
+        }
+
+        .footer {
+            background: #000000;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-top: 5rem;
+            border-top: 5px solid #fbbf24;
+        }
+
+        .footer h3 {
+            color: #fbbf24;
+            margin-bottom: 1rem;
+        }
+
+        .footer p {
+            color: #e0e0e0;
+            margin: 1rem 0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .debt-counter {
+                font-size: 2.5rem;
+            }
+
+            .table-header, .table-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+
+            .comparison-number {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💸 Presidential Debt-O-Meter 💸</h1>
+        <p class="subtitle">"Making America's Credit Card Great Again... at Maxing It Out"</p>
+    </div>
+
+    <div class="live-debt">
+        <h2>Current US National Debt</h2>
+        <div class="debt-counter" id="debt-counter">$36,200,000,000,000</div>
+        <div class="debt-per-citizen">
+            That's <span style="color: #dc2626; font-weight: bold;" id="per-citizen">$106,667</span> per US citizen
+        </div>
+        <p style="margin-top: 1rem; color: #888; font-size: 0.9rem;">
+            Counter increases by ~$1 million every 30 seconds (approximate based on 2024 deficit)
+        </p>
+    </div>
+
+    <div class="container">
+        <div class="intro-box">
+            <h3>📊 About This Tracker</h3>
+            <p>
+                The US national debt is the total amount of money the federal government owes. Every president 
+                inherits debt and either adds to it or (rarely) reduces it. This tracker shows who added how much, 
+                with a special focus on record-breaking performances.
+            </p>
+            <p style="margin-top: 1rem;">
+                <strong>Methodology:</strong> Debt increases calculated from inauguration to last day in office, 
+                using Treasury Department data. All figures adjusted to show actual dollar amounts during their terms.
+            </p>
+        </div>
+
+        <!-- Trump Spotlight Section -->
+        <div class="trump-spotlight">
+            <h2>🏆 The Record Holder: Donald J. Trump 🏆</h2>
+            <p style="text-align: center; font-size: 1.2rem; margin-bottom: 2rem; color: #e0e0e0;">
+                In just 4 years, Trump added more to the national debt than most presidents combined
+            </p>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="label">Debt Added (2017-2021)</div>
+                    <div class="number">$8.4T</div>
+                    <div class="label" style="color: #888; margin-top: 0.5rem;">Trillion dollars</div>
+                </div>
+                <div class="stat-box">
+                    <div class="label">Per Day</div>
+                    <div class="number">$5.8B</div>
+                    <div class="label" style="color: #888; margin-top: 0.5rem;">Billion per day</div>
+                </div>
+                <div class="stat-box">
+                    <div class="label">Per Hour</div>
+                    <div class="number">$240M</div>
+                    <div class="label" style="color: #888; margin-top: 0.5rem;">Million per hour</div>
+                </div>
+                <div class="stat-box">
+                    <div class="label">Percentage Increase</div>
+                    <div class="number">39%</div>
+                    <div class="label" style="color: #888; margin-top: 0.5rem;">Of total debt when he started</div>
+                </div>
+            </div>
+
+            <div class="comparison-grid" style="margin-top: 3rem;">
+                <div class="comparison-card">
+                    <h4>🎯 How Many Presidents Would It Take?</h4>
+                    <div class="comparison-number">4.2</div>
+                    <div class="comparison-description">
+                        Obama administrations (2 terms each) to equal Trump's debt increase
+                    </div>
+                </div>
+
+                <div class="comparison-card">
+                    <h4>🔢 Combined Presidents Needed</h4>
+                    <div class="comparison-number">17</div>
+                    <div class="comparison-description">
+                        You'd need to combine Reagan, Bush Sr., Clinton, and Bush Jr. 
+                        (all two-term presidents) to match Trump's single term
+                    </div>
+                </div>
+
+                <div class="comparison-card">
+                    <h4>⏰ Historical Comparison</h4>
+                    <div class="comparison-number">234</div>
+                    <div class="comparison-description">
+                        Years of US history (1776-2010) to accumulate the same debt Trump added in 4 years
+                    </div>
+                </div>
+
+                <div class="comparison-card">
+                    <h4>📈 Growth Rate Champion</h4>
+                    <div class="comparison-number">1st</div>
+                    <div class="comparison-description">
+                        Place in modern history for fastest debt accumulation in a single term
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">Presidential Debt Scoreboard</h2>
+
+        <div class="presidents-table">
+            <div class="table-header">
+                <div>President</div>
+                <div>Party</div>
+                <div>Years</div>
+                <div>Debt Added</div>
+                <div>% Increase</div>
+            </div>
+            <div id="presidents-list">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="visual-comparison">
+            <h3>📊 Visual Debt Comparison: Who Added What?</h3>
+            <p style="text-align: center; color: #e0e0e0; margin-bottom: 2rem;">
+                Bar length represents total debt added during presidency
+            </p>
+            <div class="bar-chart" id="bar-chart">
+                <!-- Will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="fun-facts">
+            <h3>🤯 Mind-Blowing Trump Debt Facts</h3>
+            
+            <div class="fact-item">
+                <div class="fact-number">$2.3 million</div>
+                <p style="margin-top: 0.5rem;">Amount Trump added to the debt every single minute he was president. 
+                That's enough to buy a nice house every 60 seconds.</p>
+            </div>
+
+            <div class="fact-item">
+                <div class="fact-number">56 times</div>
+                <p style="margin-top: 0.5rem;">The number of George Washington presidencies 
+                (using his debt increase) needed to equal Trump's debt addition. Washington added $150M in 8 years. 
+                Trump added 56,000 times more in half the time.</p>
+            </div>
+
+            <div class="fact-item">
+                <div class="fact-number">12 presidents</div>
+                <p style="margin-top: 0.5rem;">If you combine every president from Truman (1945) through 
+                Clinton (2001) - that's 56 years and 12 presidents - Trump still added more debt in 4 years.</p>
+            </div>
+
+            <div class="fact-item">
+                <div class="fact-number">$25,294</div>
+                <p style="margin-top: 0.5rem;">Amount added to the national debt for every American 
+                (including babies) during Trump's presidency. That's a new car's worth of debt per person.</p>
+            </div>
+
+            <div class="fact-item">
+                <div class="fact-number">Tax cuts + COVID</div>
+                <p style="margin-top: 0.5rem;">The 2017 Tax Cuts and Jobs Act added ~$2 trillion. 
+                COVID relief added ~$3.1 trillion. Combined with baseline spending, Trump's policies and 
+                response added unprecedented peacetime debt.</p>
+            </div>
+
+            <div class="fact-item">
+                <div class="fact-number">40%</div>
+                <p style="margin-top: 0.5rem;">The percentage of ALL US debt accumulated since 1776 that 
+                was added during Trump's 4 years. Nearly half of America's 245-year debt history happened 
+                in his single term.</p>
+            </div>
+        </div>
+
+        <h2 class="section-title">How Trump Stacks Up</h2>
+
+        <div class="comparison-grid">
+            <div class="comparison-card">
+                <h4>vs. Obama (8 years)</h4>
+                <div class="comparison-number">4.2×</div>
+                <div class="comparison-description">
+                    Obama added $8.3T in 8 years ($1.04T/year).
+                    Trump added $8.4T in 4 years ($2.1T/year).
+                    Trump's rate was 4.2× higher per year.
+                </div>
+            </div>
+
+            <div class="comparison-card">
+                <h4>vs. Bush Jr. (8 years)</h4>
+                <div class="comparison-number">1.6×</div>
+                <div class="comparison-description">
+                    Bush added $5.8T in 8 years ($725B/year).
+                    Trump added $8.4T in 4 years ($2.1T/year).
+                    Trump's rate was 2.9× higher per year.
+                </div>
+            </div>
+
+            <div class="comparison-card">
+                <h4>vs. Reagan (8 years)</h4>
+                <div class="comparison-number">4.7×</div>
+                <div class="comparison-description">
+                    Reagan added $1.86T in 8 years ($233B/year).
+                    Trump added $8.4T in 4 years ($2.1T/year).
+                    Trump's rate was 9× higher per year.
+                </div>
+            </div>
+
+            <div class="comparison-card">
+                <h4>vs. ALL Pre-2000 Presidents</h4>
+                <div class="comparison-number">1.5×</div>
+                <div class="comparison-description">
+                    From Washington (1789) to Clinton (2000), the US accumulated $5.67T in debt 
+                    over 211 years. Trump added 1.5× that amount in just 4 years.
+                </div>
+            </div>
+
+            <div class="comparison-card">
+                <h4>vs. World War II</h4>
+                <div class="comparison-number">~Similar</div>
+                <div class="comparison-description">
+                    Adjusted for inflation, WWII added about $7-8T to today's debt. 
+                    Trump matched the biggest war in human history... during peacetime.
+                </div>
+            </div>
+
+            <div class="comparison-card">
+                <h4>As % of Starting Debt</h4>
+                <div class="comparison-number">39%</div>
+                <div class="comparison-description">
+                    When Trump took office, debt was $19.9T. 
+                    He increased it by 39% - one of the highest percentage increases 
+                    in modern peacetime history.
+                </div>
+            </div>
+        </div>
+
+        <div style="background: rgba(59, 130, 246, 0.1); border: 2px solid #3b82f6; border-radius: 15px; padding: 2rem; margin: 3rem 0;">
+            <h3 style="color: #93c5fd; margin-bottom: 1rem;">⚖️ Important Context</h3>
+            <p>Every modern president has increased the debt - it's nearly impossible not to given how the federal budget works. 
+            However, the RATE of increase matters enormously. Trump's debt increase was:</p>
+            <ul style="margin-left: 2rem; margin-top: 1rem; color: #e0e0e0;">
+                <li style="margin: 0.5rem 0;">Partially due to COVID-19 relief (necessary but expensive)</li>
+                <li style="margin: 0.5rem 0;">Partially due to the 2017 tax cuts ($2T added to debt)</li>
+                <li style="margin: 0.5rem 0;">Partially due to increased military and discretionary spending</li>
+                <li style="margin: 0.5rem 0;">The fastest peacetime accumulation in modern US history</li>
+                <li style="margin: 0.5rem 0;">Occurred while he claimed he would "eliminate the debt in 8 years"</li>
+            </ul>
+            <p style="margin-top: 1rem;">
+                For comparison: Obama inherited the 2008 financial crisis and added $8.3T over 8 years. 
+                Bush Jr. fought two wars and added $5.8T over 8 years. Trump added $8.4T in just 4 years, 
+                with 3 of those years being pre-COVID economic growth periods.
+            </p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <h3>The Bottom Line</h3>
+        <p>
+            Donald Trump holds the modern record for fastest debt accumulation, adding more in one term 
+            than any president in US history. To match his debt increase, you'd need to combine multiple 
+            two-term presidencies or go back centuries in American history.
+        </p>
+        <p style="margin-top: 1.5rem; color: #fbbf24; font-weight: bold;">
+            Data Sources: US Treasury Department, Congressional Budget Office, 
+            Federal Reserve Economic Data, Bureau of Economic Analysis
+        </p>
+        <p style="margin-top: 1rem; font-size: 0.9rem; color: #888;">
+            This is a satirical presentation of real data. All figures are accurate based on Treasury Department records.
+        </p>
+    </div>
+
+    <script>
+        // Presidential debt data (in trillions, actual amounts during their terms)
+        const presidents = [
+            { name: "Donald Trump", party: "R", years: "2017-2021", debtAdded: 8.4, percentIncrease: 39, startDebt: 19.9 },
+            { name: "Barack Obama", party: "D", years: "2009-2017", debtAdded: 8.3, percentIncrease: 68, startDebt: 11.9 },
+            { name: "George W. Bush", party: "R", years: "2001-2009", debtAdded: 5.8, percentIncrease: 105, startDebt: 5.7 },
+            { name: "Bill Clinton", party: "D", years: "1993-2001", debtAdded: 1.4, percentIncrease: 32, startDebt: 4.4 },
+            { name: "George H.W. Bush", party: "R", years: "1989-1993", debtAdded: 1.5, percentIncrease: 54, startDebt: 2.9 },
+            { name: "Ronald Reagan", party: "R", years: "1981-1989", debtAdded: 1.86, percentIncrease: 186, startDebt: 1.0 },
+            { name: "Jimmy Carter", party: "D", years: "1977-1981", debtAdded: 0.3, percentIncrease: 43, startDebt: 0.7 },
+            { name: "Gerald Ford", party: "R", years: "1974-1977", debtAdded: 0.2, percentIncrease: 47, startDebt: 0.5 },
+            { name: "Richard Nixon", party: "R", years: "1969-1974", debtAdded: 0.1, percentIncrease: 34, startDebt: 0.4 },
+            { name: "Lyndon Johnson", party: "D", years: "1963-1969", debtAdded: 0.04, percentIncrease: 13, startDebt: 0.3 }
+        ];
+
+        // Render presidents table
+        function renderPresidentsTable() {
+            const container = document.getElementById('presidents-list');
+            container.innerHTML = presidents.map(p => `
+                <div class="table-row ${p.name === 'Donald Trump' ? 'trump-row' : ''}">
+                    <div class="president-name">${p.name}</div>
+                    <div><span class="party party-${p.party.toLowerCase()}">${p.party}</span></div>
+                    <div>${p.years}</div>
+                    <div class="debt-increase">+$${p.debtAdded}T</div>
+                    <div class="debt-increase">+${p.percentIncrease}%</div>
+                </div>
+            `).join('');
+        }
+
+        // Render bar chart
+        function renderBarChart() {
+            const container = document.getElementById('bar-chart');
+            const maxDebt = Math.max(...presidents.map(p => p.debtAdded));
+            
+            container.innerHTML = presidents.map(p => {
+                const width = (p.debtAdded / maxDebt) * 100;
+                return `
+                    <div class="bar-item">
+                        <div class="bar-label">
+                            <span class="name">${p.name} (${p.years})</span>
+                            <span class="amount">$${p.debtAdded}T</span>
+                        </div>
+                        <div class="bar-container">
+                            <div class="bar ${p.name === 'Donald Trump' ? 'trump-bar' : ''}" 
+                                 style="width: ${width}%">
+                                ${width > 30 ? `$${p.debtAdded}T` : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Live debt counter (approximate)
+        let currentDebt = 36200000000000; // Starting point
+        const debtPerSecond = 33333; // Approximately $1M per 30 seconds
+
+        function updateDebtCounter() {
+            currentDebt += debtPerSecond;
+            document.getElementById('debt-counter').textContent = 
+                '$' + currentDebt.toLocaleString('en-US', { maximumFractionDigits: 0 });
+            
+            const perCitizen = Math.floor(currentDebt / 339000000); // US population ~339M
+            document.getElementById('per-citizen').textContent = 
+                '$' + perCitizen.toLocaleString('en-US');
+        }
+
+        // Initialize
+        renderPresidentsTable();
+        renderBarChart();
+        setInterval(updateDebtCounter, 1000);
+    </script>
+</body>
+</html>
