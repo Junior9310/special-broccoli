@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trump Court Tracker™ - So Much Winning in Court!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .gold-text {
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        header {
+            background: linear-gradient(90deg, #b8860b, #FFD700, #b8860b);
+            padding: 30px;
+            text-align: center;
+            border-bottom: 5px solid #8B0000;
+        }
+
+        header h1 {
+            font-size: 3em;
+            color: #1a1a2e;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .subtitle {
+            font-style: italic;
+            color: #333;
+            margin-top: 10px;
+            font-size: 1.3em;
+        }
+
+        .ticker {
+            background: #8B0000;
+            color: #FFD700;
+            padding: 15px;
+            overflow: hidden;
+            font-weight: bold;
+        }
+
+        .ticker-content {
+            display: inline-block;
+            animation: ticker 20s linear infinite;
+            white-space: nowrap;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .stat-box {
+            background: linear-gradient(145deg, #2a2a4a, #1a1a3a);
+            border: 3px solid #FFD700;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            min-width: 200px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s;
+        }
+
+        .stat-box:hover {
+            transform: scale(1.05);
+        }
+
+        .stat-number {
+            font-size: 4em;
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            color: #ccc;
+            margin-top: 10px;
+        }
+
+        .cases-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .section-title {
+            font-size: 2.5em;
+            color: #FFD700;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #FFD700;
+            padding-bottom: 15px;
+        }
+
+        .case-card {
+            background: linear-gradient(145deg, #2d2d4d, #1d1d3d);
+            border-left: 5px solid #FFD700;
+            margin-bottom: 25px;
+            padding: 25px;
+            border-radius: 0 15px 15px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .case-card::before {
+            content: '⚖️';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 4em;
+            opacity: 0.1;
+        }
+
+        .case-card.guilty {
+            border-left-color: #ff4444;
+        }
+
+        .case-card.liable {
+            border-left-color: #ff8800;
+        }
+
+        .case-card.dismissed {
+            border-left-color: #44ff44;
+        }
+
+        .case-card.ongoing {
+            border-left-color: #4444ff;
+        }
+
+        .case-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .case-title {
+            font-size: 1.5em;
+            color: #FFD700;
+        }
+
+        .case-status {
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        .status-guilty {
+            background: #ff4444;
+            color: white;
+        }
+
+        .status-liable {
+            background: #ff8800;
+            color: white;
+        }
+
+        .status-dismissed {
+            background: #44ff44;
+            color: #333;
+        }
+
+        .status-ongoing {
+            background: #4444ff;
+            color: white;
+        }
+
+        .status-settled {
+            background: #888;
+            color: white;
+        }
+
+        .case-details {
+            margin-top: 15px;
+            color: #ccc;
+            line-height: 1.8;
+        }
+
+        .case-details strong {
+            color: #FFD700;
+        }
+
+        .money-counter {
+            background: linear-gradient(90deg, #8B0000, #b81c1c);
+            padding: 30px;
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .money-amount {
+            font-size: 3.5em;
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        .money-label {
+            font-size: 1.3em;
+            color: #ffcccc;
+        }
+
+        .quote-box {
+            background: #FFD700;
+            color: #1a1a2e;
+            padding: 30px;
+            margin: 40px auto;
+            max-width: 800px;
+            border-radius: 15px;
+            text-align: center;
+            font-style: italic;
+            font-size: 1.4em;
+            position: relative;
+        }
+
+        .quote-box::before,
+        .quote-box::after {
+            content: '"';
+            font-size: 3em;
+            color: #8B0000;
+            position: absolute;
+        }
+
+        .quote-box::before {
+            top: 10px;
+            left: 20px;
+        }
+
+        .quote-box::after {
+            bottom: -20px;
+            right: 20px;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: #FFD700;
+        }
+
+        .bingo-card {
+            background: linear-gradient(145deg, #fff, #f0f0f0);
+            color: #333;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .bingo-title {
+            text-align: center;
+            font-size: 2em;
+            color: #8B0000;
+            margin-bottom: 20px;
+        }
+
+        .bingo-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 5px;
+        }
+
+        .bingo-cell {
+            background: #1a1a2e;
+            color: #FFD700;
+            padding: 15px 5px;
+            text-align: center;
+            font-size: 0.75em;
+            border-radius: 5px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bingo-cell.marked {
+            background: #8B0000;
+            color: #FFD700;
+        }
+
+        .bingo-cell.free {
+            background: #FFD700;
+            color: #8B0000;
+            font-weight: bold;
+        }
+
+        footer {
+            background: #0a0a1a;
+            padding: 30px;
+            text-align: center;
+            color: #666;
+            border-top: 3px solid #FFD700;
+        }
+
+        .disclaimer {
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+
+        .refresh-btn {
+            background: #FFD700;
+            color: #1a1a2e;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.2em;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 20px;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: #fff;
+            transform: scale(1.1);
+        }
+
+        .winning-meter {
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .meter-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .meter-bar {
+            height: 30px;
+            background: #333;
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .meter-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff4444, #ff8800);
+            width: 15%;
+            border-radius: 15px;
+            transition: width 1s;
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            .stat-number {
+                font-size: 2.5em;
+            }
+            
+            .money-amount {
+                font-size: 2em;
+            }
+            
+            .bingo-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🏛️ The Trump Court Tracker™ 🏛️</h1>
+        <p class="subtitle">"I'll be too busy winning to go to court!" - Narrator: He was not.</p>
+    </header>
+
+    <div class="ticker">
+        <div class="ticker-content">
+            ⚖️ BREAKING: Another day, another courtroom! 📋 "Nobody knows more about courts than me!" 🎪 First former president convicted of felonies! 🏆 Making legal history, one indictment at a time! ⚖️ "I could stand in the middle of 5th Avenue..." - Turns out, yes, there ARE consequences! 📋
+        </div>
+    </div>
+
+    <div class="stats-container">
+        <div class="stat-box">
+            <div class="stat-number">34</div>
+            <div class="stat-label">Felony Convictions</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">4</div>
+            <div class="stat-label">Criminal Indictments</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">91</div>
+            <div class="stat-label">Original Criminal Charges</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">2</div>
+            <div class="stat-label">Civil Fraud Verdicts</div>
+        </div>
+        <div class="stat-box">
+            <div class="stat-number">∞</div>
+            <div class="stat-label">"Witch Hunts" Claimed</div>
+        </div>
+    </div>
+
+    <div class="money-counter">
+        <div class="money-label">💸 Total Judgments, Fines & Settlements Against Trump 💸</div>
+        <div class="money-amount" id="money-counter">$0</div>
+        <p style="margin-top: 10px; color: #ffcccc;">(That's a lot of Trump Steaks)</p>
+    </div>
+
+    <div class="quote-box">
+        I have the best lawyers. The best! Nobody has better lawyers than me. These cases will all be thrown out. Total witch hunt!
+        <p style="margin-top: 20px; font-style: normal; font-size: 0.7em;">- Statement made approximately 847 times</p>
+    </div>
+
+    <div class="cases-section">
+        <h2 class="section-title">⚖️ The Criminal Cases ⚖️</h2>
+
+        <div class="case-card guilty">
+            <div class="case-header">
+                <h3 class="case-title">🗽 Manhattan DA - Hush Money Case</h3>
+                <span class="case-status status-guilty">GUILTY x34</span>
+            </div>
+            <div class="case-details">
+                <strong>Court:</strong> New York Supreme Court<br>
+                <strong>Judge:</strong> Juan Merchan<br>
+                <strong>Charges:</strong> 34 counts of falsifying business records<br>
+                <strong>Verdict:</strong> GUILTY on all 34 counts (May 30, 2024)<br>
+                <strong>The Gist:</strong> Paying off Stormy Daniels and cooking the books. First former president convicted of felonies! 🎉<br>
+                <strong>Trump's Response:</strong> "RIGGED!" (drink!)<br>
+                <strong>Sentence:</strong> Unconditional discharge (January 2025) - No jail, no probation, no fine. The participation trophy of sentences!
+            </div>
+        </div>
+
+        <div class="case-card dismissed">
+            <div class="case-header">
+                <h3 class="case-title">📄 Federal Classified Documents Case</h3>
+                <span class="case-status status-dismissed">DISMISSED</span>
+            </div>
+            <div class="case-details">
+                <strong>Court:</strong> U.S. District Court, Southern District of Florida<br>
+                <strong>Judge:</strong> Aileen Cannon (Trump appointee 😉)<br>
+                <strong>Charges:</strong> 40 counts including willful retention of national defense information, obstruction<br>
+                <strong>Status:</strong> Dismissed (July 2024) - Judge ruled Special Counsel was unconstitutionally appointed<br>
+                <strong>The Gist:</strong> Boxes of classified docs at Mar-a-Lago, next to the pool supplies<br>
+                <strong>Legal Scholar Take:</strong> "That's certainly... a ruling"
+            </div>
+        </div>
+
+        <div class="case-card dismissed">
+            <div class="case-header">
+                <h3 class="case-title">🏛️ Federal January 6th Case</h3>
+                <span class="case-status status-dismissed">DISMISSED</span>
+            </div>
+            <div class="case-details">
+                <strong>Court:</strong> U.S. District Court, D.C.<br>
+                <strong>Prosecutor:</strong> Jack Smith (Special Counsel)<br>
+                <strong>Charges:</strong> 4 counts including conspiracy to defraud the United States<br>
+                <strong>Status:</strong> Dismissed (November 2024) - DOJ policy against prosecuting sitting presidents<br>
+                <strong>The Gist:</strong> That whole "overturn the election" thing<br>
+                <strong>Plot Twist:</strong> Won the election, case goes poof! ✨
+            </div>
+        </div>
+
+        <div class="case-card ongoing">
+            <div class="case-header">
+                <h3 class="case-title">🍑 Georgia Election Interference Case</h3>
+                <span class="case-status status-ongoing">FROZEN LIKE ELSA</span>
+            </div>
+            <div class="case-details">
+                <strong>Court:</strong> Fulton County Superior Court<br>
+                <strong>DA:</strong> Fani Willis<br>
+                <strong>Charges:</strong> 13 counts under RICO, including conspiracy<br>
+                <strong>Status:</strong> Stalled indefinitely - Immunity questions, appeals, drama galore<br>
+                <strong>Famous Quote:</strong> "I just want to find 11,780 votes"<br>
+                <strong>Current Vibe:</strong> More frozen than a Georgia peach in January
+            </div>
+        </div>
+    </div>
+
+    <div class="cases-section">
+        <h2 class="section-title">💰 The Civil Cases 💰</h2>
+
+        <div class="case-card liable">
+            <div class="case-header">
+                <h3 class="case-title">👩 E. Jean Carroll Defamation (Round 1)</h3>
+                <span class="case-status status-liable">LIABLE - $5M</span>
+            </div>
+            <div class="case-details">
+                <strong>Verdict:</strong> Found liable for sexual abuse and defamation (May 2023)<br>
+                <strong>Damages:</strong> $5 million<br>
+                <strong>The Gist:</strong> Jury believed her. Also: "She's not my type" was not the legal defense he thought it was<br>
+                <strong>Lesson Learned:</strong> None, apparently (see Round 2)
+            </div>
+        </div>
+
+        <div class="case-card liable">
+            <div class="case-header">
+                <h3 class="case-title">👩 E. Jean Carroll Defamation (Round 2)</h3>
+                <span class="case-status status-liable">LIABLE - $83.3M</span>
+            </div>
+            <div class="case-details">
+                <strong>Verdict:</strong> Found liable for defamation AGAIN (January 2024)<br>
+                <strong>Damages:</strong> $83.3 million<br>
+                <strong>The Gist:</strong> Kept calling her a liar after losing the first case. Bold strategy, Cotton.<br>
+                <strong>Math:</strong> That's roughly 16,660,000 copies of "The Art of the Deal"
+            </div>
+        </div>
+
+        <div class="case-card liable">
+            <div class="case-header">
+                <h3 class="case-title">🏢 NY Attorney General Fraud Case</h3>
+                <span class="case-status status-liable">LIABLE - $454M</span>
+            </div>
+            <div class="case-details">
+                <strong>Judge:</strong> Arthur Engoron<br>
+                <strong>Verdict:</strong> Found liable for persistent fraud (February 2024)<br>
+                <strong>Damages:</strong> $454 million (with interest, naturally)<br>
+                <strong>The Gist:</strong> Inflating asset values to get better loans. His apartment is NOT that big.<br>
+                <strong>Banned:</strong> From running businesses in NY for 3 years<br>
+                <strong>Appeal Status:</strong> Bond reduced, still fighting it
+            </div>
+        </div>
+
+        <div class="case-card">
+            <div class="case-header">
+                <h3 class="case-title">🎓 Trump University</h3>
+                <span class="case-status status-settled">SETTLED - $25M</span>
+            </div>
+            <div class="case-details">
+                <strong>Year:</strong> 2016<br>
+                <strong>Settlement:</strong> $25 million<br>
+                <strong>The Gist:</strong> Not actually a university. Did not actually teach you to be rich.<br>
+                <strong>Accreditation:</strong> LOL no
+            </div>
+        </div>
+
+        <div class="case-card">
+            <div class="case-header">
+                <h3 class="case-title">🏛️ Trump Foundation</h3>
+                <span class="case-status status-liable">DISSOLVED + $2M</span>
+            </div>
+            <div class="case-details">
+                <strong>Year:</strong> 2019<br>
+                <strong>Outcome:</strong> Foundation dissolved, $2 million penalty<br>
+                <strong>The Gist:</strong> Using charity money for... not charity things. Like a portrait of himself.<br>
+                <strong>Banned:</strong> From running charities in NY
+            </div>
+        </div>
+    </div>
+
+    <div class="winning-meter">
+        <h3 style="text-align: center; color: #FFD700; margin-bottom: 20px;">🏆 Actual Winning Meter 🏆</h3>
+        <div class="meter-label">
+            <span>Total Loss</span>
+            <span>Total Win</span>
+        </div>
+        <div class="meter-bar">
+            <div class="meter-fill"></div>
+        </div>
+        <p style="text-align: center; margin-top: 10px; color: #888; font-size: 0.9em;">*Meter calibrated by independent "Not Tired of Winning Yet?" Institute</p>
+    </div>
+
+    <div class="bingo-card">
+        <h3 class="bingo-title">🎰 LEGAL TROUBLE BINGO 🎰</h3>
+        <div class="bingo-grid">
+            <div class="bingo-cell marked">Witch Hunt!</div>
+            <div class="bingo-cell marked">Rigged Judge</div>
+            <div class="bingo-cell marked">Perfect Phone Call</div>
+            <div class="bingo-cell marked">Hoax</div>
+            <div class="bingo-cell marked">Election Interference</div>
+            <div class="bingo-cell marked">Radical Left</div>
+            <div class="bingo-cell marked">Never Happened Before</div>
+            <div class="bingo-cell free">FREE SPACE<br>(Pleads the 5th)</div>
+            <div class="bingo-cell marked">Crooked Prosecutor</div>
+            <div class="bingo-cell marked">Total Exoneration*</div>
+            <div class="bingo-cell marked">Seeks Delay</div>
+            <div class="bingo-cell marked">Appeals Everything</div>
+            <div class="bingo-cell marked">Presidential Immunity</div>
+            <div class="bingo-cell marked">Conflicted Judge</div>
+            <div class="bingo-cell marked">Fundraising Email</div>
+        </div>
+        <p style="text-align: center; margin-top: 15px; font-size: 0.8em;">*Exoneration not guaranteed or even remotely accurate</p>
+    </div>
+
+    <div class="cases-section">
+        <h2 class="section-title">📊 Fun Facts & Statistics 📊</h2>
+        
+        <div class="case-card">
+            <div class="case-details" style="font-size: 1.1em;">
+                <p>📅 <strong>Days spent in court (2023-2024):</strong> More than most people spend at the gym</p><br>
+                <p>💤 <strong>Times photographed sleeping in court:</strong> Several (allegedly "resting his eyes")</p><br>
+                <p>📱 <strong>Truth Social posts about cases:</strong> Somewhere between "a lot" and "please stop"</p><br>
+                <p>🧑‍⚖️ <strong>Judges called "biased":</strong> All of them (even the ones he appointed)</p><br>
+                <p>💼 <strong>Lawyers who've quit or been disbarred:</strong> A concerning number</p><br>
+                <p>🎨 <strong>Courtroom sketches commissioned for Truth Social:</strong> The flattering ones only</p><br>
+                <p>⏰ <strong>Total delay tactics attempted:</strong> Yes</p>
+            </div>
+        </div>
+    </div>
+
+    <div style="text-align: center; padding: 40px;">
+        <button class="refresh-btn" onclick="location.reload()">🔄 Check for New Indictments</button>
+        <p style="color: #666; margin-top: 10px; font-size: 0.9em;">Last updated: Check back in 5 minutes, probably something new</p>
+    </div>
+
+    <footer>
+        <div class="disclaimer">
+            <p><strong>⚠️ DISCLAIMER ⚠️</strong></p>
+            <p>This is a satirical website. All case information is based on actual public court records, but the commentary is humor/satire. 
+            Donald Trump maintains his innocence in all matters and considers every investigation a "witch hunt." 
+            Any resemblance to a functional legal strategy is purely coincidental.</p>
+            <p style="margin-top: 20px;">© 2024 The Department of Unbelievable Legal Situations</p>
+            <p style="margin-top: 10px; font-style: italic;">"We're all out of thoughts and prayers, just offering popcorn now" 🍿</p>
+        </div>
+    </footer>
+
+    <script>
+        // Animate money counter
+        function animateCounter() {
+            const target = 569300000; // Approximate total
+            const counter = document.getElementById('money-counter');
+            const duration = 3000;
+            const steps = 60;
+            const increment = target / steps;
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                counter.textContent = '$' + Math.floor(current).toLocaleString();
+            }, duration / steps);
+        }
+
+        // Run on load
+        window.onload = function() {
+            animateCounter();
+            
+            // Add random "breaking news" occasionally
+            const breakingNews = [
+                "JUST IN: Trump calls judge 'very unfair' - nation shocked",
+                "UPDATE: Legal experts say 'we've never seen anything like this'",
+                "DEVELOPING: Another lawyer considering quitting",
+                "ALERT: Trump posts in ALL CAPS about persecution",
+                "BREAKING: Local man has more court dates than vacation days"
+            ];
+            
+            setInterval(() => {
+                const ticker = document.querySelector('.ticker-content');
+                const randomNews = breakingNews[Math.floor(Math.random() * breakingNews.length)];
+                // Could add dynamic news here
+            }, 30000);
+        };
+
+        // Easter egg - Konami code
+        let konamiCode = [];
+        const konamiPattern = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+        
+        document.addEventListener('keydown', (e) => {
+            konamiCode.push(e.key);
+            konamiCode = konamiCode.slice(-10);
+            
+            if (konamiCode.join(',') === konamiPattern.join(',')) {
+                document.body.style.animation = 'spin 2s linear';
+                alert('🎉 ACHIEVEMENT UNLOCKED: You found the only thing Trump hasn\'t appealed! 🎉');
+            }
+        });
+    </script>
+</body>
+</html>
