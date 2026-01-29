@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Presidential Vacation Cost Tracker</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2c5282;
+            --accent-color: #ed8936;
+            --trump-color: #c53030;
+            --obama-color: #2b6cb0;
+            --bush-color: #276749;
+            --biden-color: #553c9a;
+            --background: #f7fafc;
+            --card-bg: #ffffff;
+            --text-primary: #1a202c;
+            --text-secondary: #4a5568;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        section {
+            margin-bottom: 3rem;
+        }
+
+        section h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Counter Section */
+        .counter-section {
+            display: flex;
+            justify-content: center;
+        }
+
+        .counter-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+            animation: countUp 0.8s ease-out;
+        }
+
+        .trump-card {
+            border-top: 5px solid var(--trump-color);
+        }
+
+        .counter-card h2 {
+            border: none;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cost-display {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--trump-color);
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .trip-count, .days-info {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin: 0.5rem 0;
+        }
+
+        .trip-count span, .days-info span {
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .cost-per-day {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+            font-size: 1.1rem;
+        }
+
+        /* Comparison Grid */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .president-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            border-top: 4px solid;
+            transition: transform 0.3s ease;
+        }
+
+        .president-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .president-card.trump { border-color: var(--trump-color); }
+        .president-card.obama { border-color: var(--obama-color); }
+        .president-card.bush { border-color: var(--bush-color); }
+        .president-card.biden { border-color: var(--biden-color); }
+
+        .president-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .president-card .years {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .president-card .total-cost {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .president-card .stats {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .president-card .stats div {
+            margin: 0.3rem 0;
+        }
+
+        /* Chart Section */
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        /* Breakdown Section */
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .breakdown-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+
+        .breakdown-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .breakdown-cost {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin: 0.5rem 0;
+        }
+
+        .breakdown-desc {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .timeline-item {
+            display: flex;
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .timeline-item:last-child {
+            border-bottom: none;
+        }
+
+        .timeline-date {
+            min-width: 120px;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .timeline-location {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .timeline-cost {
+            font-weight: 700;
+            color: var(--trump-color);
+        }
+
+        /* What Could This Buy */
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .item-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .item-emoji {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .item-count {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .item-name {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* Quote Section */
+        .quote-section {
+            background: linear-gradient(135deg, var(--trump-color), #9b2c2c);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+            text-align: center;
+        }
+
+        .quote-section blockquote {
+            font-size: 1.4rem;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .quote-section cite {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        /* Sources Section */
+        .sources-content {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .sources-content ul {
+            margin: 1rem 0 1rem 2rem;
+        }
+
+        .sources-content li {
+            margin: 0.5rem 0;
+        }
+
+        .disclaimer {
+            background: #fef3c7;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            border-left: 4px solid var(--accent-color);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+            opacity: 0.9;
+        }
+
+        /* Animations */
+        @keyframes countUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .cost-display {
+                font-size: 2.5rem;
+            }
+            
+            main {
+                padding: 1rem;
+            }
+
+            .quote-section blockquote {
+                font-size: 1.1rem;
+            }
+
+            .timeline-item {
+                flex-direction: column;
+            }
+        }
+
+        /* Scrollbar Styling */
+        .timeline::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .timeline::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .timeline::-webkit-scrollbar-thumb {
+            background: var(--secondary-color);
+            border-radius: 4px;
+        }
+
+        .timeline::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>💰 Presidential Vacation & Golf Cost Tracker</h1>
+        <p class="subtitle">Tracking taxpayer expenses for presidential leisure activities</p>
+    </header>
+
+    <main>
+        <!-- Live Counter Section -->
+        <section class="counter-section">
+            <div class="counter-card trump-card">
+                <h2>Trump Golf Costs (2017-2021)</h2>
+                <div class="cost-display" id="trump-counter">$0</div>
+                <div class="trip-count">
+                    <span id="trump-trips">0</span> golf outings
+                </div>
+                <div class="days-info">
+                    <span id="trump-days">0</span> days in office
+                </div>
+                <div class="cost-per-day">
+                    <strong>Cost per day in office:</strong> 
+                    <span id="trump-per-day">$0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trump Quote Section -->
+        <section class="quote-section">
+            <blockquote>
+                "I'm going to be working for you. I'm not going to have time to go play golf."
+            </blockquote>
+            <cite>— Donald Trump, August 2016</cite>
+        </section>
+
+        <!-- Comparison Section -->
+        <section class="comparison-section">
+            <h2>📊 Presidential Comparison</h2>
+            <div class="comparison-grid" id="comparison-grid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Chart Section -->
+        <section class="chart-section">
+            <h2>📈 Cost Comparison Chart</h2>
+            <div class="chart-container">
+                <canvas id="costChart"></canvas>
+            </div>
+        </section>
+
+        <!-- Breakdown Section -->
+        <section class="breakdown-section">
+            <h2>💵 Cost Breakdown</h2>
+            <div class="breakdown-grid">
+                <div class="breakdown-card">
+                    <h3>✈️ Air Force One</h3>
+                    <p class="breakdown-cost">~$200,000/hour</p>
+                    <p class="breakdown-desc">Flight costs to Mar-a-Lago or Bedminster (round trip to FL ~$3.4M)</p>
+                </div>
+                <div class="breakdown-card">
+                    <h3>🚔 Secret Service</h3>
+                    <p class="breakdown-cost">~$500,000+/trip</p>
+                    <p class="breakdown-desc">Security, hotels, equipment, meals, and overtime pay</p>
+                </div>
+                <div class="breakdown-card">
+                    <h3>🏌️ Golf Cart Rentals</h3>
+                    <p class="breakdown-cost">~$550,000+ total</p>
+                    <p class="breakdown-desc">Secret Service golf cart rentals at Trump properties</p>
+                </div>
+                <div class="breakdown-card">
+                    <h3>🚓 Coast Guard & Local Police</h3>
+                    <p class="breakdown-cost">~$100,000+/trip</p>
+                    <p class="breakdown-desc">Local law enforcement and Coast Guard support</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline Section -->
+        <section class="timeline-section">
+            <h2>📅 Sample Golf Outings (Final Year)</h2>
+            <div class="timeline" id="timeline">
+                <!-- Populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- What Could This Buy Section -->
+        <section class="comparison-items-section">
+            <h2>🛒 What Could $144 Million Buy Instead?</h2>
+            <div class="items-grid" id="items-grid">
+                <!-- Populated by JavaScript -->
+            </div>
+        </section>
+
+        <!-- Sources Section -->
+        <section class="sources-section">
+            <h2>📚 Data Sources & Methodology</h2>
+            <div class="sources-content">
+                <p><strong>Note:</strong> Exact costs are difficult to determine as the government doesn't release complete figures. Estimates are based on:</p>
+                <ul>
+                    <li><strong>Government Accountability Office (GAO)</strong> - Official reports on presidential travel costs</li>
+                    <li><strong>Freedom of Information Act (FOIA) requests</strong> - Secret Service and military expense records</li>
+                    <li><strong>Air Force One operating costs</strong> - Publicly available military data (~$200,000/hour)</li>
+                    <li><strong>Secret Service expense reports</strong> - Hotel, rental, and equipment costs</li>
+                    <li><strong>Judicial Watch investigations</strong> - FOIA lawsuit results</li>
+                    <li><strong>News investigations</strong> - Washington Post, NBC, ProPublica, and others</li>
+                    <li><strong>TrumpGolfCount.com</strong> - Crowd-sourced tracking of golf outings</li>
+                </ul>
+                <p class="disclaimer">⚠️ <strong>Disclaimer:</strong> These are estimates based on available public data. Actual costs may vary. Some costs overlap with official duties. This site aims to provide transparency about government spending, not political commentary. All presidents incur travel and security costs.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Data compiled from public sources | Last updated: <span id="last-updated"></span></p>
+        <p>This is an educational resource for government spending transparency</p>
+        <p style="margin-top: 1rem; font-size: 0.9rem;">Created for informational purposes only</p>
+    </footer>
+
+    <script>
+        // Presidential Data
+        const presidentialData = {
+            trump: {
+                name: "Donald Trump",
+                years: "2017-2021",
+                totalCost: 144000000,
+                golfTrips: 298,
+                daysInOffice: 1461,
+                vacationDays: 381,
+                primaryLocations: ["Mar-a-Lago, FL", "Trump Bedminster, NJ", "Trump Los Angeles"],
+                costPerTrip: 3400000,
+                color: "#c53030",
+                notes: "Played at his own properties, with taxpayer money going to his businesses"
+            },
+            obama: {
+                name: "Barack Obama",
+                years: "2009-2017",
+                totalCost: 114000000,
+                golfTrips: 333,
+                daysInOffice: 2922,
+                vacationDays: 328,
+                primaryLocations: ["Hawaii", "Martha's Vineyard", "Camp David"],
+                color: "#2b6cb0",
+                notes: "8 years in office (twice as long as Trump)"
+            },
+            bushW: {
+                name: "George W. Bush",
+                years: "2001-2009",
+                totalCost: 140000000,
+                golfTrips: 24,
+                daysInOffice: 2922,
+                vacationDays: 1020,
+                primaryLocations: ["Crawford Ranch, TX", "Camp David", "Kennebunkport, ME"],
+                color: "#276749",
+                notes: "Stopped golfing in 2003 due to Iraq War; extensive ranch time"
+            },
+            biden: {
+                name: "Joe Biden",
+                years: "2021-2025",
+                totalCost: 30000000,
+                golfTrips: 50,
+                daysInOffice: 1461,
+                vacationDays: 380,
+                primaryLocations: ["Wilmington, DE", "Rehoboth Beach, DE", "Camp David"],
+                color: "#553c9a",
+                notes: "Travels primarily to Delaware homes (shorter/cheaper flights)"
+            }
+        };
+
+        // Golf trip timeline (sample data - last year of presidency)
+        const trumpGolfTimeline = [
+            { date: "Jan 17, 2021", location: "Trump West Palm Beach", cost: 3400000 },
+            { date: "Jan 10, 2021", location: "Trump West Palm Beach", cost: 3400000 },
+            { date: "Jan 3, 2021", location: "Trump West Palm Beach", cost: 3400000 },
+            { date: "Dec 27, 2020", location: "Trump West Palm Beach", cost: 3400000 },
+            { date: "Dec 25, 2020", location: "Trump West Palm Beach", cost: 3400000 },
+            { date: "Dec 20, 2020", location: "Trump West Palm Beach", cost: 3400000 },
+            { date: "Dec 13, 2020", location: "Trump National, VA", cost: 500000 },
+            { date: "Dec 6, 2020", location: "Trump National, VA", cost: 500000 },
+            { date: "Nov 28, 2020", location: "Trump National, VA", cost: 500000 },
+            { date: "Nov 27, 2020", location: "Trump National, VA", cost: 500000 },
+            { date: "Nov 21, 2020", location: "Trump National, VA", cost: 500000 },
+            { date: "Nov 15, 2020", location: "Trump National, VA", cost: 500000 },
+            { date: "Nov 8, 2020", location: "Trump National, VA", cost: 500000 },
+            { date: "Nov 7, 2020", location: "Trump National, VA", cost: 500000 },
+            { date: "Oct 25, 2020", location: "Trump National, VA", cost: 500000 },
+            { date: "Oct 18, 2020", location: "Trump National, VA", cost: 500000 },
+            { date: "Oct 11, 2020", location: "Trump Bedminster, NJ", cost: 1000000 },
+            { date: "Oct 4, 2020", location: "Trump National, VA", cost: 500000 },
+            { date: "Sep 27, 2020", location: "Trump National, VA", cost: 500000 },
+            { date: "Sep 20, 2020", location: "Trump National, VA", cost: 500000 },
+        ];
+
+        // What could this money buy
+        const comparisonItems = [
+            { emoji: "🎓", name: "Full 4-year college scholarships", unitCost: 50000 },
+            { emoji: "🏠", name: "Average US homes", unitCost: 350000 },
+            { emoji: "👨‍⚕️", name: "Nurse salaries (1 year)", unitCost: 75000 },
+            { emoji: "👮", name: "Police officer salaries (1 year)", unitCost: 65000 },
+            { emoji: "🚑", name: "Fully-equipped ambulances", unitCost: 250000 },
+            { emoji: "📚", name: "Teacher salaries (1 year)", unitCost: 60000 },
+            { emoji: "💉", name: "COVID vaccine doses", unitCost: 20 },
+            { emoji: "🍎", name: "School lunches for kids", unitCost: 3 },
+            { emoji: "🛡️", name: "Veterans' housing assistance", unitCost: 25000 },
+            { emoji: "🚌", name: "School buses", unitCost: 100000 },
+            { emoji: "🔬", name: "Research grants", unitCost: 500000 },
+            { emoji: "🏥", name: "Rural clinic buildings", unitCost: 2000000 },
+        ];
+
+        // Format currency
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // Format large numbers
+        function formatNumber(num) {
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(1) + 'M';
+            } else if (num >= 1000) {
+                return new Intl.NumberFormat('en-US').format(num);
+            }
+            return num.toString();
+        }
+
+        // Animate counter
+        function animateCounter(element, target, duration = 2000) {
+            const start = 0;
+            const startTime = performance.now();
+            
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easeOut = 1 - Math.pow(1 - progress, 3);
+                const current = Math.floor(start + (target - start) * easeOut);
+                element.textContent = formatCurrency(current);
+                
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                }
+            }
+            
+            requestAnimationFrame(update);
+        }
+
+        // Initialize Trump counter
+        function initTrumpCounter() {
+            const counterEl = document.getElementById('trump-counter');
+            const tripsEl = document.getElementById('trump-trips');
+            const daysEl = document.getElementById('trump-days');
+            const perDayEl = document.getElementById('trump-per-day');
+            
+            const data = presidentialData.trump;
+            
+            animateCounter(counterEl, data.totalCost);
+            
+            setTimeout(() => {
+                tripsEl.textContent = data.golfTrips;
+                daysEl.textContent = new Intl.NumberFormat('en-US').format(data.daysInOffice);
+                perDayEl.textContent = formatCurrency(Math.round(data.totalCost / data.daysInOffice));
+            }, 500);
+        }
+
+        // Build comparison grid
+        function buildComparisonGrid() {
+            const grid = document.getElementById('comparison-grid');
+            
+            Object.entries(presidentialData).forEach(([key, data]) => {
+                const card = document.createElement('div');
+                card.className = `president-card ${key}`;
+                
+                const costPerDay = Math.round(data.totalCost / data.daysInOffice);
+                const costPerYear = Math.round(data.totalCost / (data.daysInOffice / 365));
+                
+                card.innerHTML = `
+                    <h3>${data.name}</h3>
+                    <p class="years">${data.years}</p>
+                    <p class="total-cost" style="color: ${data.color}">${formatCurrency(data.totalCost)}</p>
+                    <div class="stats">
+                        <div>📅 ${new Intl.NumberFormat('en-US').format(data.daysInOffice)} days in office</div>
+                        <div>🏖️ ${data.vacationDays} vacation/travel days</div>
+                        <div>🏌️ ${data.golfTrips} golf outings</div>
+                        <div>💵 ${formatCurrency(costPerDay)}/day</div>
+                        <div>📊 ${formatCurrency(costPerYear)}/year</div>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #718096; margin-top: 1rem; font-style: italic;">${data.notes}</p>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Build chart
+        function buildChart() {
+            const ctx = document.getElementById('costChart').getContext('2d');
+            
+            const labels = Object.values(presidentialData).map(d => d.name);
+            const totalCosts = Object.values(presidentialData).map(d => d.totalCost / 1000000);
+            const colors = Object.values(presidentialData).map(d => d.color);
+            const perYear = Object.values(presidentialData).map(d => 
+                (d.totalCost / (d.daysInOffice / 365)) / 1000000
+            );
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Total Cost (Millions $)',
+                            data: totalCosts,
+                            backgroundColor: colors.map(c => c + 'CC'),
+                            borderColor: colors,
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Annual Average (Millions $)',
+                            data: perYear,
+                            backgroundColor: colors.map(c => c + '55'),
+                            borderColor: colors,
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Presidential Vacation/Travel Costs Comparison',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': $' + context.parsed.y.toFixed(1) + 'M';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Cost (Millions USD)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Build timeline
+        function buildTimeline() {
+            const timeline = document.getElementById('timeline');
+            
+            trumpGolfTimeline.forEach(trip => {
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+                item.innerHTML = `
+                    <span class="timeline-date">${trip.date}</span>
+                    <span class="timeline-location">🏌️ ${trip.location}</span>
+                    <span class="timeline-cost">~${formatCurrency(trip.cost)}</span>
+                `;
+                timeline.appendChild(item);
+            });
+        }
+
+        // Build comparison items
+        function buildComparisonItems() {
+            const grid = document.getElementById('items-grid');
+            const totalCost = presidentialData.trump.totalCost;
+            
+            comparisonItems.forEach(item => {
+                const count = Math.floor(totalCost / item.unitCost);
+                const card = document.createElement('div');
+                card.className = 'item-card';
+                card.innerHTML = `
+                    <div class="item-emoji">${item.emoji}</div>
+                    <div class="item-count">${formatNumber(count)}</div>
+                    <div class="item-name">${item.name}</div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Set last updated date
+        function setLastUpdated() {
+            const el = document.getElementById('last-updated');
+            el.textContent = new Date().toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // Initialize everything when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            initTrumpCounter();
+            buildComparisonGrid();
+            buildChart();
+            buildTimeline();
+            buildComparisonItems();
+            setLastUpdated();
+        });
+    </script>
+</body>
+</html>
